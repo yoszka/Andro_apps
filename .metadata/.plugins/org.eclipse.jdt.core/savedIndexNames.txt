@@ -1,0 +1,3 @@
+INDEX VERSION 1.126+/root/workspace/Andro_apps/.metadata/.plugins/org.eclipse.jdt.core
+4167455202.index
+3326843794.index

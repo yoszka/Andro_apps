@@ -1,0 +1,32 @@
+!SESSION 2013-02-03 13:21:01.682 -----------------------------------------------
+eclipse.buildId=v21.0.1-543035
+java.version=1.6.0_24
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product com.android.ide.eclipse.adt.package.product
+
+!ENTRY com.android.ide.eclipse.ddms 4 0 2013-02-03 13:21:18.675
+!MESSAGE DDMS files not found: /home/tomek/android/system/platform-tools/adb /home/tomek/android/system/tools/hprof-conv /home/tomek/android/system/tools/traceview 
+!SESSION 2013-02-04 22:19:08.171 -----------------------------------------------
+eclipse.buildId=v21.0.1-543035
+java.version=1.6.0_24
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product com.android.ide.eclipse.adt.package.product
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-02-04 22:25:08.332
+!MESSAGE Failed to load properties file for project 'ContactsTest'
+
+!ENTRY org.eclipse.core.externaltools 4 0 2013-02-04 23:10:00.689
+!MESSAGE The working directory /ContactsTest/src/com/example/contactstest/MainActivity.java does not exist for the external tool named open_in_Explorer.
+
+!ENTRY org.eclipse.core.externaltools 4 0 2013-02-04 23:10:31.257
+!MESSAGE The working directory /root/workspace/ContactsTest/src/com/example/contactstest/MainActivity.java does not exist for the external tool named open_in_Explorer.
+
+!ENTRY org.eclipse.core.externaltools 4 0 2013-02-04 23:12:17.756
+!MESSAGE The working directory /root/workspace/ContactsTest/src/com/example/contactstest/MainActivity.java does not exist for the external tool named open_in_Explorer.
+
+!ENTRY org.eclipse.core.externaltools 4 0 2013-02-04 23:13:11.921
+!MESSAGE The working directory /root/workspace/ContactsTest/src/com/example/contactstest/MainActivity.java does not exist for the external tool named open_in_Explorer.

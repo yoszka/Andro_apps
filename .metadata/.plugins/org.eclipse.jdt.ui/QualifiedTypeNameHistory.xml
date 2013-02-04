@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="android.content.ContentProviderOperation"/>
+<fullyQualifiedTypeName name="android.provider.ContactsContract.RawContacts"/>
+<fullyQualifiedTypeName name="android.provider.ContactsContract.CommonDataKinds.StructuredName"/>
+<fullyQualifiedTypeName name="android.provider.ContactsContract.Data"/>
+<fullyQualifiedTypeName name="android.provider.ContactsContract"/>
+<fullyQualifiedTypeName name="android.provider.ContactsContract.CommonDataKinds.Phone"/>
+<fullyQualifiedTypeName name="android.content.ContentProviderResult"/>
+<fullyQualifiedTypeName name="android.os.RemoteException"/>
+<fullyQualifiedTypeName name="android.content.OperationApplicationException"/>
+<fullyQualifiedTypeName name="java.lang.RuntimeException"/>
+<fullyQualifiedTypeName name="android.view.View"/>
+</qualifiedTypeNameHistroy>
