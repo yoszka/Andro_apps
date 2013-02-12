@@ -12,16 +12,48 @@ import android.provider.ContactsContract.RawContacts;
 import android.app.Activity;
 import android.content.ContentProviderOperation;
 import android.content.OperationApplicationException;
+import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends Activity {
-
+    private static final String TAG = "MainActivity";
+    private long mMsTime = 0; 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
+        
 
+    }
+    
+
+    // Button handlers
+    
+    public void addContactClick(View v){
+        addContact("Alan", "666");
+    }
+    
+    public void deleteAllContactsClick(View v){
+      deleteAllContacts();       
+    } 
+    
+    public void onClickUseMadCursor(View v){
+        startTimeCount();
+        MadCursorClass madCursorClass = new MadCursorClass();
+//        Cursor c = madCursorClass.getHugeCursor(null);
+        Cursor c = madCursorClass.getHugeCursor(new String[]{MadCursorClass.COLUMN_01, MadCursorClass.COLUMN_03, MadCursorClass.COLUMN_06, MadCursorClass.COLUMN_02, MadCursorClass.COLUMN_05});
+        long difference = stopTimeCount();
+        
+        dumpCursorContent(c);
+        c.close();
+        Log.d(TAG, "Time spend: " + difference + " ms");
+    }    
+    
+
+    // Functions
+    
     public void addContact(String name, String number){
     	ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         int rawContactInsertIndex = ops.size();
@@ -75,14 +107,28 @@ public class MainActivity extends Activity {
             throw new RuntimeException("Cant remove contact", e);
         }  
     } 
-    
-    
-    public void addContactClick(View v){
-        addContact("Alan", "666");
+ 
+    private void dumpCursorContent(Cursor c){
+        Log.v(TAG, "############################################");
+        while(c.moveToNext()){
+            for(String columnName : c.getColumnNames()){
+                Log.v(TAG, columnName + ": [" + c.getString(c.getColumnIndex(columnName)) +"]");
+            }
+            Log.v(TAG, "--------------------------------------------");
+        }        
     }
     
-    public void deleteAllContactsClick(View v){
-      deleteAllContacts();       
-    }    
+    private void startTimeCount(){
+        mMsTime = System.currentTimeMillis();
+    }
+    
+    private long stopTimeCount(){
+        return System.currentTimeMillis() - mMsTime;
+    }
+    
+    
+    
+    
+    
     
 }

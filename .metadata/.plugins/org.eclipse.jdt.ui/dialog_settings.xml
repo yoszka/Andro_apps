@@ -2,6 +2,9 @@
 <section name="Workbench">
 	<item value="/home/tomek/android/system/development/ide/eclipse" key="org.eclipse.jdt.ui.importorder.loadpath"/>
 	<item value="/home/tomek/android/system/development/ide/eclipse" key="org.eclipse.jdt.ui.codeformatter.loadpath"/>
+	<section name="OptionalMessageDialog.hide.">
+		<item value="true" key="org.eclipse.jdt.ui.typecomment.deprecated"/>
+	</section>
 	<section name="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">
 		<item value="true" key="group_libraries"/>
 		<item value="false" key="linkWithEditor"/>

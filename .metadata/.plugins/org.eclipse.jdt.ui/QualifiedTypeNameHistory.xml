@@ -12,4 +12,8 @@
 <fullyQualifiedTypeName name="android.content.OperationApplicationException"/>
 <fullyQualifiedTypeName name="java.lang.RuntimeException"/>
 <fullyQualifiedTypeName name="android.view.View"/>
+<fullyQualifiedTypeName name="android.database.Cursor"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="com.example.contactstest.MadCursorClass"/>
 </qualifiedTypeNameHistroy>
