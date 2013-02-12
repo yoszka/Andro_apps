@@ -1,0 +1,9 @@
+package com.example.contactstest;
+
+public class MadCursorClass {
+    
+    public Cursor getHugeCursor(String[] projection){
+        
+    }
+
+}

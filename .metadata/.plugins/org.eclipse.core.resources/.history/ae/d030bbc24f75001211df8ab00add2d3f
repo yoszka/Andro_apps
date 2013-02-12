@@ -1,0 +1,15 @@
+package com.example.contactstest;
+
+import android.database.Cursor;
+
+import java.util.HashMap;
+
+public class MadCursorClass {
+    
+    public Cursor getHugeCursor(String[] projection){
+        HashMap<String, String> sFullProjection = new HashMap<String, String>();
+        
+        return null;
+    }
+
+}

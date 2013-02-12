@@ -1,0 +1,90 @@
+package com.example.contactstest;
+
+import android.database.Cursor;
+import android.util.Log;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
+public class MadCursorClass {
+    private static final String TAG = "MadCursorClass";
+    private static final String COLUMN_01 = "COLUMN_01"; 
+    private static final String COLUMN_02 = "COLUMN_02"; 
+    private static final String COLUMN_03 = "COLUMN_03"; 
+    private static final String COLUMN_04 = "COLUMN_04"; 
+    private static final String COLUMN_05 = "COLUMN_05"; 
+    private static final String COLUMN_06 = "COLUMN_06"; 
+    private static final String COLUMN_07 = "COLUMN_07"; 
+    private static final String COLUMN_08 = "COLUMN_08"; 
+    private static final String COLUMN_09 = "COLUMN_09"; 
+    private static final String COLUMN_10 = "COLUMN_10"; 
+    
+    public Cursor getHugeCursor(String[] projection){
+        HashMap<String, String> sFullProjection = new HashMap<String, String>();
+        String column1 = null;
+        String column2 = null;
+        String column3 = null;
+        String column4 = null;
+        String column5 = null;
+        
+        sFullProjection.put(COLUMN_01, column1);
+        sFullProjection.put(COLUMN_02, column2);
+        sFullProjection.put(COLUMN_03, column3);
+        sFullProjection.put(COLUMN_04, null);
+        sFullProjection.put(COLUMN_05, null);
+        sFullProjection.put(COLUMN_06, null);
+        sFullProjection.put(COLUMN_07, null);
+        sFullProjection.put(COLUMN_08, null);
+        sFullProjection.put(COLUMN_09, column4);
+        sFullProjection.put(COLUMN_10, column5);
+        
+        sFullProjection.put(COLUMN_04, null);
+        Log.i(TAG, "COLUMN_04: [" + sFullProjection.get(COLUMN_04) + "]");
+        
+        sFullProjection.put(COLUMN_04, "ALAN");
+        Log.i(TAG, "COLUMN_04: [" + sFullProjection.get(COLUMN_04) + "]");
+        
+        sFullProjection.put(COLUMN_04, "JOE");
+        Log.i(TAG, "COLUMN_04: [" + sFullProjection.get(COLUMN_04) + "]");
+        //
+        
+        Log.i(TAG, "COLUMN_01: [" + sFullProjection.get(COLUMN_01) + "]");
+        
+        column1 = "alan";
+        Log.i(TAG, "COLUMN_04: [" + sFullProjection.get(COLUMN_01) + "]");
+        
+        column1 = "joe";
+        Log.i(TAG, "COLUMN_01: [" + sFullProjection.get(COLUMN_01) + "]");
+        
+        
+        //
+        HashMap<String, Person> sPersons = new HashMap<String, Person>();
+        Person p1 = new Person("JOE");
+        Person p2 = new Person("Tom");
+        
+        sPersons.put("01", p1);
+        sPersons.put("02", p2);
+        
+        Log.i(TAG, "Persons 01: [" + sPersons.get("01").name + "]");
+        p1.name = "Khali";
+        Log.i(TAG, "Persons 01: [" + sPersons.get("01").name + "]");
+        
+        WeakReference<String> weakReference = new WeakReference<String>("Erni");
+        
+        Log.i(TAG, "Persons 01: [" + sPersons.get("01").name + "]");
+        
+        return null;
+    }
+    
+    private loki(String txt){
+        Log.i(TAG, txt+"");
+    }
+    
+    private class Person{
+        String name;
+        public Person(String name) {
+            this.name = name;
+        }
+    }
+
+}

@@ -1,0 +1,25 @@
+package com.example.contactstest;
+
+import android.database.Cursor;
+
+import java.util.HashMap;
+
+public class MadCursorClass {
+    private static final String COLUMN_01 = "COLUMN_01"; 
+    private static final String COLUMN_02 = "COLUMN_02"; 
+    private static final String COLUMN_03 = "COLUMN_03"; 
+    private static final String COLUMN_04 = "COLUMN_04"; 
+    private static final String COLUMN_05 = "COLUMN_05"; 
+    private static final String COLUMN_06 = "COLUMN_06"; 
+    private static final String COLUMN_07 = "COLUMN_07"; 
+    private static final String COLUMN_08 = "COLUMN_08"; 
+    private static final String COLUMN_09 = "COLUMN_09"; 
+    private static final String COLUMN_10 = "COLUMN_10"; 
+    
+    public Cursor getHugeCursor(String[] projection){
+        HashMap<String, String> sFullProjection = new HashMap<String, String>();
+        
+        return null;
+    }
+
+}
