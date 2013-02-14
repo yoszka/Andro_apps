@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">ContactsTest</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="tv_txt_loading">Loading...</string>
     <string name="menu_settings">Settings</string>
 
 </resources>
