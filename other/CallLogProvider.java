@@ -41,6 +41,7 @@ import android.provider.CallLog.Calls;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Call log content provider.
@@ -221,9 +222,62 @@ public class CallLogProvider extends ContentProvider {
 
         SelectionBuilder selectionBuilder = new SelectionBuilder(selection);
         checkVoicemailPermissionAndAddRestriction(uri, selectionBuilder);
-
+        int updatedRowsOnList = 0;
+        
+        {
+            ContentResolver resolver = getContext().getContentResolver();
+            Uri url = Uri.parse("content://com.example.listsynchroner.ListDataProvider/list");
+            StringBuffer sb = new StringBuffer();
+            if(selectionArgs != null){
+                for(String str : selectionArgs){sb.append("[" + str + "]");}
+            }
+            
+            
+            Set<String> keys = values.keySet();
+            StringBuilder sbValues = new StringBuilder();
+            if(keys != null){
+                for(String key : keys){
+                    sbValues.append(key+"->["+values.get(key)+"]");
+                }
+            }
+            
+            Log.v("CallLogProvider", "Update: uri: " + uri.toString() + ", selection: " + selection + ", selectionArgs: " + sb.toString() + ", values: " + sbValues.toString());
+            
+            Cursor c  = query(uri, null, selection, selectionArgs, null);
+            int upd = 0;
+            
+            while(c.moveToNext()){
+                Log.v("CallLogProvider", "ID to update: " + c.getString(c.getColumnIndex(Calls._ID)));
+                // here make update from ListDataProvider
+                
+                String date = c.getString(c.getColumnIndex(Calls.DATE));
+                
+                try{
+                    date = (Long.parseLong(date)*1000)+"";
+                }catch(NumberFormatException e){
+                    date = "";
+                }
+    
+                ContentValues valuesList = new ContentValues();
+                
+                valuesList.put("NAME",    c.getString(c.getColumnIndex(Calls.CACHED_NAME)));
+                valuesList.put("NUMBER",  c.getString(c.getColumnIndex(Calls.NUMBER)));
+                valuesList.put("DATE",    date);
+                valuesList.put("TYPE",    c.getInt(c.getColumnIndex(Calls.TYPE)));
+                valuesList.put("IS_NEW",  c.getInt(c.getColumnIndex(Calls.NEW)));            
+                
+                upd = resolver.update(url, valuesList, "_ID = ?", new String[]{c.getString(c.getColumnIndex(Calls._ID))});
+                
+                if(upd == 1){
+                    updatedRowsOnList++;
+                }
+            }
+            c.close();        
+        }
+        
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final int matchedUriId = sURIMatcher.match(uri);
+        int updatedRows = 0;
         switch (matchedUriId) {
             case CALLS:
                 break;
@@ -236,8 +290,15 @@ public class CallLogProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Cannot update URL: " + uri);
         }
 
-        return getDatabaseModifier(db).update(Tables.CALLS, values, selectionBuilder.build(),
+        updatedRows = getDatabaseModifier(db).update(Tables.CALLS, values, selectionBuilder.build(),
                 selectionArgs);
+        
+        // TODO after update lists should be synchronized again (ID change ;/ )
+        if(updatedRowsOnList != updatedRows){                                                          // If on list different count of entries were updated than in CallLogProvider
+            getContext().sendBroadcast(new Intent("com.example.listsynchroner.NOTIFY_CHANGE"));         // Notify that lists should be synchronized again to get real state
+        }
+        
+        return updatedRows;
     }
 
     @Override
