@@ -13,6 +13,7 @@ import android.widget.Toast;
  * 
  * @author root
  * adb shell am broadcast -a android.intent.action.BOOT_COMPLETED
+ * adb shell am broadcast -a com.example.listsynchroner.SYNCHRONIZE_DATA
  * adb shell am broadcast -a com.example.listsynchroner.NOTIFY_CHANGE
  * adb shell am broadcast -a com.example.listsynchroner.ADD_ENTRY
  */
@@ -33,8 +34,12 @@ public class StartupBroadcastReceiver extends BroadcastReceiver{
                 synchronizeCallLog(context);
             }
             
-            if(action.equals("com.example.listsynchroner.NOTIFY_CHANGE")){          // data synchronization
+            if(action.equals("com.example.listsynchroner.SYNCHRONIZE_DATA")){          // data synchronization
                 synchronizeCallLog(context);
+            }
+            
+            if(action.equals("com.example.listsynchroner.NOTIFY_CHANGE")){             // Notify CallLog data change
+                context.getContentResolver().notifyChange(Calls.CONTENT_URI, null);
             }
             
             if(action.equals("com.example.listsynchroner.ADD_ENTRY")){              // Add dummy entry to 

@@ -31,6 +31,7 @@ import com.google.common.annotations.VisibleForTesting;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.ListFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -99,6 +100,17 @@ public class CallLogFragment extends ListFragment implements ViewPagerVisibility
     /** Called by the CallLogQueryHandler when the list of calls has been fetched or updated. */
     @Override
     public void onCallsFetched(Cursor cursor) {
+        if(mCallLogQueryHandler != null){
+            synchronized(mCallLogQueryHandler.progressBarSynchroinzator){
+                if(mCallLogQueryHandler.mProgressDialog != null){
+                    Log.v(TAG, "onCallsFetched dismiss");
+                    mCallLogQueryHandler.mProgressDialog.dismiss();
+                    mCallLogQueryHandler.mProgressDialog = null;
+                }else{
+                    Log.v(TAG, "onCallsFetched");
+                }
+            }
+        }        
         if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
@@ -226,13 +238,14 @@ public class CallLogFragment extends ListFragment implements ViewPagerVisibility
         super.onPause();
         // Kill the requests thread
         mAdapter.stopRequestProcessing();
+        Log.v(TAG, "onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
         updateOnExit();
-        
+        Log.v(TAG, "onStop");
         
         if(mCallLogQueryHandler != null){
             synchronized(mCallLogQueryHandler.progressBarSynchroinzator){
@@ -247,6 +260,7 @@ public class CallLogFragment extends ListFragment implements ViewPagerVisibility
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.v(TAG, "onDestroy");
         mAdapter.stopRequestProcessing();
         mAdapter.changeCursor(null);
     }
@@ -391,6 +405,17 @@ public class CallLogFragment extends ListFragment implements ViewPagerVisibility
     private void refreshData() {
         // Mark all entries in the contact info cache as out of date, so they will be looked up
         // again once being shown.
+        if(mCallLogQueryHandler != null){
+            synchronized(mCallLogQueryHandler.progressBarSynchroinzator){
+                if(mCallLogQueryHandler.mProgressDialog == null){
+                    Log.v(TAG, "refreshData show progress bar");
+                    new Throwable().printStackTrace();
+                    mCallLogQueryHandler.mProgressDialog = ProgressDialog.show(getActivity(),"In progress","Loading");
+                }else{
+                    Log.v(TAG, "refreshData");
+                }
+            }
+        }         
         mAdapter.invalidateCache();
         startCallsQuery();
         startVoicemailStatusQuery();

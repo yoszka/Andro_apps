@@ -152,18 +152,9 @@ import javax.annotation.concurrent.GuardedBy;
      * It will asynchronously update the content of the list view when the fetch completes.
      */
     public void fetchAllCalls() {
-//        if(mProgressDialog != null){
-//            Log.v(TAG, "fetchAllCalls dismiss");
-//            mProgressDialog.dismiss();
-//        }
+        Log.v(TAG, "fetchAllCalls");
         cancelFetch();
         invalidate();
-        Log.v(TAG, "fetchAllCalls show progress bar");
-        synchronized(progressBarSynchroinzator){
-            if(mProgressDialog == null){
-                mProgressDialog = ProgressDialog.show(mContext,"In progress","Loading");
-            }
-        }
         fetchCalls(QUERY_NEW_CALLS_TOKEN, true /*isNew*/, false /*voicemailOnly*/);
         fetchCalls(QUERY_OLD_CALLS_TOKEN, false /*isNew*/, false /*voicemailOnly*/);
     }
@@ -216,13 +207,13 @@ import javax.annotation.concurrent.GuardedBy;
     /** Cancel any pending fetch request. */
     private void cancelFetch() {
         Log.v(TAG, "cancelFetch ");
-        synchronized(progressBarSynchroinzator){
-            if(mProgressDialog != null){
-                Log.v(TAG, "onQueryComplete dismiss");
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
-            }
-        }
+//        synchronized(progressBarSynchroinzator){
+//            if(mProgressDialog != null){
+//                Log.v(TAG, "onQueryComplete dismiss");
+//                mProgressDialog.dismiss();
+//                mProgressDialog = null;
+//            }
+//        }
         cancelOperation(QUERY_NEW_CALLS_TOKEN);
         cancelOperation(QUERY_OLD_CALLS_TOKEN);
     }
@@ -237,8 +228,6 @@ import javax.annotation.concurrent.GuardedBy;
         ContentValues values = new ContentValues(1);
         values.put(Calls.NEW, "0");
 
-        
-//        Toast.makeText(mContext, "markNewCallsAsOld", Toast.LENGTH_SHORT).show();
         startUpdate(UPDATE_MARK_AS_OLD_TOKEN, null, Calls.CONTENT_URI_WITH_VOICEMAIL,
                 values, where.toString(), null);
     }
@@ -255,7 +244,6 @@ import javax.annotation.concurrent.GuardedBy;
         ContentValues values = new ContentValues(1);
         values.put(Calls.NEW, "0");
 
-//        Toast.makeText(mContext, "markNewVoicemailsAsOld", Toast.LENGTH_SHORT).show();
         startUpdate(UPDATE_MARK_VOICEMAILS_AS_OLD_TOKEN, null, Calls.CONTENT_URI_WITH_VOICEMAIL,
                 values, where.toString(), new String[]{ Integer.toString(Calls.VOICEMAIL_TYPE) });
     }
@@ -271,7 +259,6 @@ import javax.annotation.concurrent.GuardedBy;
         ContentValues values = new ContentValues(1);
         values.put(Calls.IS_READ, "1");
 
-//        Toast.makeText(mContext, "markMissedCallsAsRead", Toast.LENGTH_SHORT).show();
         startUpdate(UPDATE_MARK_MISSED_CALL_AS_READ_TOKEN, null, Calls.CONTENT_URI, values,
                 where.toString(), null);
     }
@@ -290,14 +277,7 @@ import javax.annotation.concurrent.GuardedBy;
 
     @Override
     protected synchronized void onQueryComplete(int token, Object cookie, Cursor cursor) {
-//        Toast.makeText(mContext, "onQueryComplete " + token, Toast.LENGTH_SHORT).show();
-        synchronized(progressBarSynchroinzator){
-            if(mProgressDialog != null){
-                Log.v(TAG, "onQueryComplete dismiss");
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
-            }
-        }
+        Log.v(TAG, "onQueryComplete");
         if (token == QUERY_NEW_CALLS_TOKEN) {
             // Store the returned cursor.
             mNewCallsCursor = new ExtendedCursor(
