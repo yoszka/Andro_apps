@@ -258,18 +258,38 @@ public class CallLogProvider extends ContentProvider {
                     date = "";
                 }
     
-                ContentValues valuesList = new ContentValues();
+                ContentValues newValuesList = new ContentValues();
                 
-                valuesList.put("NAME",    c.getString(c.getColumnIndex(Calls.CACHED_NAME)));
-                valuesList.put("NUMBER",  c.getString(c.getColumnIndex(Calls.NUMBER)));
-                valuesList.put("DATE",    date);
-                valuesList.put("TYPE",    c.getInt(c.getColumnIndex(Calls.TYPE)));
-                valuesList.put("IS_NEW",  c.getInt(c.getColumnIndex(Calls.NEW)));            
+                if(values.containsKey(Calls.CACHED_NAME)){
+                    newValuesList.put("NAME",    values.getAsString(Calls.CACHED_NAME));
+                }
+                if(values.containsKey(Calls.NUMBER)){
+                    newValuesList.put("NUMBER",    values.getAsString(Calls.NUMBER));
+                }
+                if(values.containsKey(Calls.DATE)){
+                    newValuesList.put("DATE",    values.getAsString(Calls.DATE));
+                }
+                if(values.containsKey(Calls.TYPE)){
+                    newValuesList.put("TYPE",    values.getAsString(Calls.TYPE));
+                }
+                if(values.containsKey(Calls.NEW)){
+                    newValuesList.put("IS_NEW",    values.getAsString(Calls.NEW));
+                }
+                // ...
                 
-                upd = resolver.update(url, valuesList, "_ID = ?", new String[]{c.getString(c.getColumnIndex(Calls._ID))});
+                // FIXME below is a bug, new values should be retrieve from variable "values"
+//                valuesList.put("NAME",    c.getString(c.getColumnIndex(Calls.CACHED_NAME)));
+//                valuesList.put("NUMBER",  c.getString(c.getColumnIndex(Calls.NUMBER)));
+//                valuesList.put("DATE",    date);
+//                valuesList.put("TYPE",    c.getInt(c.getColumnIndex(Calls.TYPE)));
+//                valuesList.put("IS_NEW",  c.getInt(c.getColumnIndex(Calls.NEW)));            
                 
-                if(upd == 1){
-                    updatedRowsOnList++;
+                if(newValuesList.size() > 0){
+                    upd = resolver.update(url, newValuesList, "_ID = ?", new String[]{c.getString(c.getColumnIndex(Calls._ID))});
+                    
+                    if(upd == 1){
+                        updatedRowsOnList++;
+                    }
                 }
             }
             c.close();        
@@ -295,7 +315,7 @@ public class CallLogProvider extends ContentProvider {
         
         // TODO after update lists should be synchronized again (ID change ;/ )
         if(updatedRowsOnList != updatedRows){                                                          // If on list different count of entries were updated than in CallLogProvider
-            getContext().sendBroadcast(new Intent("com.example.listsynchroner.NOTIFY_CHANGE"));         // Notify that lists should be synchronized again to get real state
+            getContext().sendBroadcast(new Intent("com.example.listsynchroner.SYNCHRONIZE_DATA"));         // Notify that lists should be synchronized again to get real state
         }
         
         return updatedRows;
@@ -357,7 +377,7 @@ public class CallLogProvider extends ContentProvider {
         }
         
         if((!isSyncing) && (deletedRowsOnList != deletedRows)){                                         // If on list different count of entries were deleted than in CallLogProvider
-            getContext().sendBroadcast(new Intent("com.example.listsynchroner.NOTIFY_CHANGE"));         // Notify that lists should be synchronized again
+            getContext().sendBroadcast(new Intent("com.example.listsynchroner.SYNCHRONIZE_DATA"));         // Notify that lists should be synchronized again
         }
         
         return deletedRows;

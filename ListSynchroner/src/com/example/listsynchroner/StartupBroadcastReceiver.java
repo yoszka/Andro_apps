@@ -51,7 +51,7 @@ public class StartupBroadcastReceiver extends BroadcastReceiver{
                 values.put(ListDataProvider.TYPE,    (((int)(Math.random()*10))%3)+1);
                 values.put(ListDataProvider.IS_NEW,  1);
                 
-                context.getContentResolver().insert(ListDataProvider.CONTENT_URI, values); 
+                context.getContentResolver().insert(ListDataProvider.CONTENT_URI, values);
             }            
         }
     }
@@ -76,6 +76,8 @@ public class StartupBroadcastReceiver extends BroadcastReceiver{
             CallLogSynchro.addCall(ctx, id, name, "2", number, 1, type, date, 67, isNew);
         }   
         c.close();
+        // automatic notification for insert were disabled, so do it manually
+        ctx.getContentResolver().notifyChange(Calls.CONTENT_URI, null);
     }
     
     
