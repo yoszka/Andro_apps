@@ -26,7 +26,7 @@ import android.widget.Toast;
 /**
  * @author Tomek
  * adb shell am broadcast -a pl.xt.jokii.locationreceiver.LOCATION -e extras_key extras_string_value
- * adb shell am broadcast -a pl.xt.jokii.locationreceiver.LOCATION -e location_lat 51.1151300 -e location_lon 16.9506200 -e location_acc 100.0 -e location_provider network -e location_timestamp 1363388511
+ * adb shell am broadcast -a pl.xt.jokii.locationreceiver.LOCATION -e location_lat 51.1151300 -e location_lon 16.9506200 -e location_acc 100.0 -e location_provider network -e location_timestamp 1363388511000
  */
 public class LocationReceiver extends MapActivity {
 	private boolean mIsReceiverRegistered = false;
@@ -36,8 +36,7 @@ public class LocationReceiver extends MapActivity {
 	private Drawable time2; 
 	private Drawable cancel; 
 	private Point punkt = new Point();
-	private GeoPoint geoPoint;
-	private GeoPoint mCurrentPos = new GeoPoint(51115130, 16950620);
+	private GeoPoint mCurrentPos = new GeoPoint(52198000, 18923080);
 	private Location mCurrentLocation = new Location(LocationManager.NETWORK_PROVIDER);
 	private MapController mc;
 	
@@ -81,7 +80,8 @@ public class LocationReceiver extends MapActivity {
     	mapView.getOverlays().add(new MapOverlay());
     	
     	mc = mapView.getController();
-    	mc.setZoom(14);
+    	mc.setZoom(7);
+    	mc.animateTo(mCurrentPos);
     	
     	mPositionIcon = getResources().getDrawable(R.drawable.ic_android);
     	mPositionIcon.setBounds(0,0,30,30);
@@ -147,17 +147,6 @@ public class LocationReceiver extends MapActivity {
 	}
 	
 	class MapOverlay extends Overlay{
-    	@Override
-    	public boolean onTap(GeoPoint p, MapView mapView) {
-    		geoPoint = p;
-			return true;
-    	};
-    	
-    	@Override
-    	public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
-    		super.draw(canvas, mapView, shadow, when);
-    		return true;
-    	}
     	
     	public void draw(Canvas canvas, MapView mapView, boolean shadow) {        		
     		super.draw(canvas, mapView, shadow);
@@ -179,6 +168,10 @@ public class LocationReceiver extends MapActivity {
 				p.setColor(Color.BLACK);
 				p.setAlpha(255);
 				canvas.drawText(String.format("%.1f", mCurrentLocation.getAccuracy()), mPositionIcon.getBounds().width(), 0, p);
+				
+				p.setColor(Color.RED);
+				Date date = new Date(mCurrentLocation.getTime());
+				canvas.drawText(String.format("%d:%02d", date.getHours(), date.getMinutes()), mPositionIcon.getBounds().width(), mPositionIcon.getBounds().height(), p);
 			}
 			
 //			switch(mState){
