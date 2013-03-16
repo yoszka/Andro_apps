@@ -41,6 +41,7 @@ public class LocationMain extends MapActivity {
 	private boolean mIsReceiverRegistered = false;
 	private BroadcastReceiver mReceiver; 
 	private final static String RECEIVER_ACTION = "pl.xt.jokii.locationreceiver.LOCATION";
+	MapView mapView;
 	private Drawable mPositionIcon; 
 	private Drawable time2; 
 	private Drawable cancel; 
@@ -50,6 +51,7 @@ public class LocationMain extends MapActivity {
 	private MapController mc;
 	private StringBuilder mStrb;
 	private final static String KEY_FISRST_RUN = "first_run";
+	private static final int POSITION_REFRESH_PERIOD_SECOND = 20;
 	private Timer mTimer = new Timer();
 	
 	/**
@@ -77,20 +79,15 @@ public class LocationMain extends MapActivity {
 	 */
 	private final static String KEY_LOCATION_TIMESTAMP = "location_timestamp";
 	
-	MapView mapView;
 	
-	
-	private static final int POSITION_REFRESH_PERIOD_SECOND = 20;
 	private void startTask() {
         mTimer.schedule(new PeriodicTask(), 0);
-//        timer.cancel();
     }
 	
 	private class PeriodicTask extends TimerTask {
         @Override
         public void run() {
     		Intent intent = new Intent(getApplicationContext(), LocationGetter.class);
-    		intent.putExtra(KEY_FISRST_RUN, true);
     		getApplicationContext().startService(intent);
     		
             mTimer.schedule(new PeriodicTask(), POSITION_REFRESH_PERIOD_SECOND * 1000);
@@ -115,12 +112,6 @@ public class LocationMain extends MapActivity {
     	
     	mPositionIcon = getResources().getDrawable(R.drawable.ic_android);
     	mPositionIcon.setBounds(0,0,30,30);
-    	
-    	time2 = getResources().getDrawable(R.drawable.time2);
-    	cancel = getResources().getDrawable(R.drawable.cancel);
-    	
-    	time2.setBounds(0,0,time2.getIntrinsicWidth(),time2.getIntrinsicHeight());
-    	cancel.setBounds(0,0,cancel.getIntrinsicWidth(),cancel.getIntrinsicHeight());    	
     	
 	  mReceiver = new BroadcastReceiver() {
 		@Override
@@ -175,11 +166,6 @@ public class LocationMain extends MapActivity {
 	  	registerReceiver(mReceiver, new IntentFilter(RECEIVER_ACTION)); 
 	  	mIsReceiverRegistered = true;
 	  
-//	  startJDBC();
-	  	
-//		Intent intent = new Intent(this, LocationGetter.class);
-//		intent.putExtra(KEY_FISRST_RUN, true);
-//		this.startService(intent);
 	  	startTask();
 	}
 	
@@ -211,32 +197,6 @@ public class LocationMain extends MapActivity {
 				canvas.drawText(String.format("%d:%02d", date.getHours(), date.getMinutes()), mPositionIcon.getBounds().width(), mPositionIcon.getBounds().height(), p);
 			}
 			
-//			switch(mState){
-//			case IDLE:
-//			case SEARCHING:
-//				canvas.translate(ikona.getBounds().width(), -time2.getBounds().height());
-//				time2.draw(canvas);
-//				break;
-//				
-//			case SEARCHING_FAIL:
-//				canvas.translate(ikona.getBounds().width(), -cancel.getBounds().height());
-//				cancel.draw(canvas);
-//				break;
-//				
-//			case SEARCHING_SUCCESS:
-//    			if(positionAccuracy > 0){
-//    				p.setColor(Color.BLACK);
-//    				p.setAlpha(255);
-//    				canvas.drawText(String.format("%.1f", positionAccuracy), ikona.getBounds().width(), 0, p);
-//    			}
-////        			else{
-////        				canvas.translate(ikona.getBounds().width(), -time2.getBounds().height());
-////        				time2.draw(canvas);
-////        			}
-//    			break;
-//			}
-
-			
 			canvas.restore();
     	}
 	}
@@ -248,79 +208,6 @@ public class LocationMain extends MapActivity {
     	double ratio = (earthEquatorInPix * Math.pow(2, zoom)) / earthEquatorInMeters;
 		return ratio;
     }	
-    
-    /**
-     * Execute remote DB operations
-     */
-    public void startJDBC()
-    {
-    	new refreshDbData().execute();        
-    }
-    
-    
-    /**
-     * Connecting to remote MySQL data base, perform INSERT and SELECT operation
-     * source http://developer.android.com/guide/components/processes-and-threads.html
-     * @author Tomasz Jokiel
-     *
-     */
-    private class refreshDbData extends AsyncTask<Void, Void, String>
-    {
-
-    	/** The system calls this to perform work in a worker thread and
-         * delivers it the parameters given to AsyncTask.execute() */
-		@Override
-		protected String doInBackground(Void... arg0) {
-			Connection connection;
-			Statement statement;
-			ResultSet result;
-
-			try {
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException("JDBC driver fail");
-			}
-
-
-			try {
-				//Connection connection = DriverManager.getConnection("jdbc:mysql://db_address:port/bd_name","user","passowrd");
-	        	connection = DriverManager.getConnection("jdbc:mysql://db4free.net:3306/android971873","username","password");
-	        	statement   = connection.createStatement();
-	        	
-//	        	statement.execute("INSERT INTO `proba` (`ID`, `text`) VALUES (NULL, 'z eclipsa androida');");		// use statement.execute("....."); for INSERT, UPDATE ?
-//	        	statement.execute("INSERT INTO `android971873`.`locations` (`ID`, `user`, `location_lat`, `location_lon`, `location_acc`, `location_provider`, `location_timestamp`) VALUES (NULL, 'tomek', '51.1151300', '16.9506200', '100.0', 'network', 1363388511000);");
-	        	result = statement.executeQuery("SELECT * FROM `locations`"); 											// use statement.executeQuery("....."); for SELECT
-
-
-	        	mStrb = new StringBuilder();
-	        	 while (result.next()) {
-	        		 mStrb.append("location_lat: " + result.getString(result.findColumn("location_lat")) + "\n");
-	        		 mStrb.append("location_lon: " + result.getDouble(result.findColumn("location_lon")) + "\n");
-	        		 mStrb.append("location_timestamp: " + result.getLong("location_timestamp") + "\n");
-	        	 }
-
-
-	        	result.close();
-	        	statement.close();
-	        	connection.close();	
-			} catch (Exception e) {
-				throw new RuntimeException("JDBC connection fail", e);
-			}
-
-			return mStrb.toString();
-		}
-
-	    /** The system calls this to perform work in the UI thread and delivers
-	      * the result from doInBackground() */		
-		@Override
-		protected void onPostExecute(String result) {
-//			tv.setText(result);
-			Log.v("JDBC result", "result: " + result);
-		}
-
-
-    	
-    }    
     
 	
 	@Override

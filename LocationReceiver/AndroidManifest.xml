@@ -26,7 +26,6 @@
             </intent-filter>
         </activity>
         <service android:name="LocationGetter"></service>
-        <receiver android:name="AlarmReceiver" android:process=":remote" ></receiver>
         
         <uses-library android:name="com.google.android.maps" />
     </application>
