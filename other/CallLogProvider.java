@@ -25,11 +25,9 @@ import com.android.providers.contacts.util.SelectionBuilder;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -41,7 +39,11 @@ import android.provider.CallLog.Calls;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Call log content provider.
@@ -131,6 +133,9 @@ public class CallLogProvider extends ContentProvider {
         qb.setProjectionMap(sCallsProjectionMap);
         qb.setStrict(true);
 
+        printParametersToLog("QUERY", uri, projection, selection, selectionArgs, sortOrder, null);
+        SelectionResolver(selection, selectionArgs);
+
         SelectionBuilder selectionBuilder = new SelectionBuilder(selection);
         checkVoicemailPermissionAndAddRestriction(uri, selectionBuilder);
 
@@ -183,30 +188,29 @@ public class CallLogProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        boolean isSyncing = values.containsKey("SYNCING");          // Check for SYNCING column and ...
-        values.remove("SYNCING");                                   // ... remove it
         checkForSupportedColumns(sCallsProjectionMap, values);
-        if(isSyncing){
-            // Inserting a voicemail record through call_log requires the voicemail
-            // permission and also requires the additional voicemail param set.
-            if (hasVoicemailValue(values)) {
-                checkIsAllowVoicemailRequest(uri);
-                mVoicemailPermissions.checkCallerHasFullAccess();
-            }
-            if (mCallsInserter == null) {
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
-                mCallsInserter = new DatabaseUtils.InsertHelper(db, Tables.CALLS);
-            }
-            
-            ContentValues copiedValues = new ContentValues(values);
-            
-            // Add the computed fields to the copied values.
-            mCallLogInsertionHelper.addComputedValues(copiedValues);
-            
-            long rowId = getDatabaseModifier(mCallsInserter).insert(copiedValues);
-            if (rowId > 0) {
-                return ContentUris.withAppendedId(uri, rowId);
-            }
+        // Inserting a voicemail record through call_log requires the voicemail
+        // permission and also requires the additional voicemail param set.
+        
+        printParametersToLog("INSERT", uri, null, null, null, null, values);
+        
+        if (hasVoicemailValue(values)) {
+            checkIsAllowVoicemailRequest(uri);
+            mVoicemailPermissions.checkCallerHasFullAccess();
+        }
+        if (mCallsInserter == null) {
+            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            mCallsInserter = new DatabaseUtils.InsertHelper(db, Tables.CALLS);
+        }
+
+        ContentValues copiedValues = new ContentValues(values);
+
+        // Add the computed fields to the copied values.
+        mCallLogInsertionHelper.addComputedValues(copiedValues);
+
+        long rowId = getDatabaseModifier(mCallsInserter).insert(copiedValues);
+        if (rowId > 0) {
+            return ContentUris.withAppendedId(uri, rowId);
         }
         return null;
     }
@@ -216,88 +220,19 @@ public class CallLogProvider extends ContentProvider {
         checkForSupportedColumns(sCallsProjectionMap, values);
         // Request that involves changing record type to voicemail requires the
         // voicemail param set in the uri.
+        
+        printParametersToLog("UPDATE", uri, null, selection, selectionArgs, null, values);
+        SelectionResolver(selection, selectionArgs);
+        
         if (hasVoicemailValue(values)) {
             checkIsAllowVoicemailRequest(uri);
         }
 
         SelectionBuilder selectionBuilder = new SelectionBuilder(selection);
         checkVoicemailPermissionAndAddRestriction(uri, selectionBuilder);
-        int updatedRowsOnList = 0;
-        
-        {
-            ContentResolver resolver = getContext().getContentResolver();
-            Uri url = Uri.parse("content://com.example.listsynchroner.ListDataProvider/list");
-            StringBuffer sb = new StringBuffer();
-            if(selectionArgs != null){
-                for(String str : selectionArgs){sb.append("[" + str + "]");}
-            }
-            
-            
-            Set<String> keys = values.keySet();
-            StringBuilder sbValues = new StringBuilder();
-            if(keys != null){
-                for(String key : keys){
-                    sbValues.append(key+"->["+values.get(key)+"]");
-                }
-            }
-            
-            Log.v("CallLogProvider", "Update: uri: " + uri.toString() + ", selection: " + selection + ", selectionArgs: " + sb.toString() + ", values: " + sbValues.toString());
-            
-            Cursor c  = query(uri, null, selection, selectionArgs, null);
-            int upd = 0;
-            
-            while(c.moveToNext()){
-                Log.v("CallLogProvider", "ID to update: " + c.getString(c.getColumnIndex(Calls._ID)));
-                // here make update from ListDataProvider
-                
-                String date = c.getString(c.getColumnIndex(Calls.DATE));
-                
-                try{
-                    date = (Long.parseLong(date)*1000)+"";
-                }catch(NumberFormatException e){
-                    date = "";
-                }
-    
-                ContentValues newValuesList = new ContentValues();
-                
-                if(values.containsKey(Calls.CACHED_NAME)){
-                    newValuesList.put("NAME",    values.getAsString(Calls.CACHED_NAME));
-                }
-                if(values.containsKey(Calls.NUMBER)){
-                    newValuesList.put("NUMBER",    values.getAsString(Calls.NUMBER));
-                }
-                if(values.containsKey(Calls.DATE)){
-                    newValuesList.put("DATE",    values.getAsString(Calls.DATE));
-                }
-                if(values.containsKey(Calls.TYPE)){
-                    newValuesList.put("TYPE",    values.getAsString(Calls.TYPE));
-                }
-                if(values.containsKey(Calls.NEW)){
-                    newValuesList.put("IS_NEW",    values.getAsString(Calls.NEW));
-                }
-                // ...
-                
-                // FIXME below is a bug, new values should be retrieve from variable "values"
-//                valuesList.put("NAME",    c.getString(c.getColumnIndex(Calls.CACHED_NAME)));
-//                valuesList.put("NUMBER",  c.getString(c.getColumnIndex(Calls.NUMBER)));
-//                valuesList.put("DATE",    date);
-//                valuesList.put("TYPE",    c.getInt(c.getColumnIndex(Calls.TYPE)));
-//                valuesList.put("IS_NEW",  c.getInt(c.getColumnIndex(Calls.NEW)));            
-                
-                if(newValuesList.size() > 0){
-                    upd = resolver.update(url, newValuesList, "_ID = ?", new String[]{c.getString(c.getColumnIndex(Calls._ID))});
-                    
-                    if(upd == 1){
-                        updatedRowsOnList++;
-                    }
-                }
-            }
-            c.close();        
-        }
-        
+
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final int matchedUriId = sURIMatcher.match(uri);
-        int updatedRows = 0;
         switch (matchedUriId) {
             case CALLS:
                 break;
@@ -310,78 +245,27 @@ public class CallLogProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Cannot update URL: " + uri);
         }
 
-        updatedRows = getDatabaseModifier(db).update(Tables.CALLS, values, selectionBuilder.build(),
+        return getDatabaseModifier(db).update(Tables.CALLS, values, selectionBuilder.build(),
                 selectionArgs);
-        
-        // TODO after update lists should be synchronized again (ID change ;/ )
-        if(updatedRowsOnList != updatedRows){                                                          // If on list different count of entries were updated than in CallLogProvider
-            getContext().sendBroadcast(new Intent("com.example.listsynchroner.SYNCHRONIZE_DATA"));         // Notify that lists should be synchronized again to get real state
-        }
-        
-        return updatedRows;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        boolean isSyncing = false;
-        if(selection != null){
-            isSyncing = selection.equals("SYNCING");
-        }
-        
-        if(isSyncing){
-            selection = null;                    // on syncing only all entries from CallLogProvider are cleared
-            selectionArgs = null;                // so we don't need selection and selectionArgs
-        }
-        
         SelectionBuilder selectionBuilder = new SelectionBuilder(selection);
         checkVoicemailPermissionAndAddRestriction(uri, selectionBuilder);
-        int deletedRowsOnList = 0;
         
-        if(!isSyncing){
-            ContentResolver resolver = getContext().getContentResolver();
-            Uri url = Uri.parse("content://com.example.listsynchroner.ListDataProvider/list");
-            StringBuffer sb = new StringBuffer();
-            if(selectionArgs != null){
-                for(String str : selectionArgs){sb.append("[" + str + "]");}
-            }
-            
-            Log.v("CallLogProvider", "uri: " + uri.toString() + ", selection: " + selection + ", selectionArgs: " + sb.toString());
-            
-            Cursor c  = query(uri, new String[]{Calls._ID}, selection, selectionArgs, null);
-            int del = 0;
-            
-            while(c.moveToNext()){
-                Log.v("CallLogProvider", "ID to delete: " + c.getString(c.getColumnIndex(Calls._ID)));
-                // here make deletion from ListDataProvider
-                del = resolver.delete(url, "_ID = ?", new String[]{c.getString(c.getColumnIndex(Calls._ID))});
-                
-                if(del == 1){
-                    deletedRowsOnList++;
-                }
-            }
-            c.close();
-        }
-        // and additional make same deletion in CallLogProvider, but after that operation CallLogProvider and ListDataProvider should be synced again, in case of failed deleting on ListDataProvider 
+        printParametersToLog("DELETE", uri, null, selection, selectionArgs, null, null);
+        SelectionResolver(selection, selectionArgs);
 
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final int matchedUriId = sURIMatcher.match(uri);
-        int deletedRows = 0;
         switch (matchedUriId) {
             case CALLS:
-                deletedRows = getDatabaseModifier(db).delete(Tables.CALLS,
+                return getDatabaseModifier(db).delete(Tables.CALLS,
                         selectionBuilder.build(), selectionArgs);
-                break;
-                
             default:
                 throw new UnsupportedOperationException("Cannot delete that URL: " + uri);
         }
-        
-        if((!isSyncing) && (deletedRowsOnList != deletedRows)){                                         // If on list different count of entries were deleted than in CallLogProvider
-            getContext().sendBroadcast(new Intent("com.example.listsynchroner.SYNCHRONIZE_DATA"));         // Notify that lists should be synchronized again
-        }
-        
-        return deletedRows;
-        
     }
 
     // Work around to let the test code override the context. getContext() is final so cannot be
@@ -462,4 +346,231 @@ public class CallLogProvider extends ContentProvider {
             throw new IllegalArgumentException("Invalid call id in uri: " + uri, e);
         }
     }
+    
+    private void printParametersToLog(String text, Uri uri, String[] projection, String selection, String[] selectionArgs,
+            String sortOrder, ContentValues values) {
+        
+        StringBuilder sbProjection = new StringBuilder();
+        StringBuilder sbSelectionArgs = new StringBuilder();
+        StringBuilder sbValues = new StringBuilder();
+        
+        if(projection != null) {
+            for(String proj : projection) {
+                sbProjection.append("[" + proj + "]");
+            }
+        }
+        
+        if(selectionArgs != null) {
+            for(String sel : selectionArgs) {
+                sbSelectionArgs.append("[" + sel + "]");
+            }
+        }
+        
+        if(values != null) {
+            Set<String> keySet = values.keySet();
+            Iterator<String> it = keySet.iterator();
+            
+            while(it.hasNext()) {
+                String key = it.next();
+                sbValues.append(key + "->["+values.get(key) + "]");
+            }                
+        }
+        
+        Log.v("_CallLogProvider", text 
+                + ": uri=" + uri.toString() 
+//                + ", projection=" + sbProjection.toString() 
+                + ", selection=" + selection 
+                + ", selectionArgs=" + sbSelectionArgs.toString() 
+                + ", sortOrder" + sortOrder 
+                + ", values=" + sbValues.toString());
+    }
+    
+    
+    
+    // ********************************************************************************************************************************
+    // ********************************************************************************************************************************
+    // ********************************************************************************************************************************
+    // ********************************************************************************************************************************
+    private static void SelectionResolver(String selection, String[] selectionArgs){
+        Map.Entry<Boolean, String> entry;
+        ParameterPair parameterPair = null;
+        boolean exist_is_read = false;
+        String value_is_read = null;
+        boolean exist_new = false;
+        String value_new = null;
+        boolean exist_type = false;
+        String value_type = null;
+        boolean exist_date = false;
+        String value_date = null;
+        String parameter_date = null;
+        String[] IDsArray = null;
+        
+        // Merge selection and selectionArgs
+        if((selection != null) && (selectionArgs != null)){
+            selection = selection.replaceAll("\\?", "%s");
+            
+            switch(selectionArgs.length){
+            case 1:
+                selection = String.format(selection, selectionArgs[0]);
+                break;
+            case 2:
+                selection = String.format(selection, selectionArgs[0], selectionArgs[1]);
+                break;
+            case 3:
+                selection = String.format(selection, selectionArgs[0], selectionArgs[1], selectionArgs[2]);
+                break;
+            case 4:
+                selection = String.format(selection, selectionArgs[0], selectionArgs[1], selectionArgs[2], selectionArgs[3]);
+                break;
+            }
+        }
+        System.out.println("MERGED: "+selection);
+        
+        IDsArray = extractIDsArray(selection);
+        
+        parameterPair = getValuePairParameter(selection, "is_read");
+        exist_is_read = parameterPair.isKey_exist();
+        value_is_read = parameterPair.getValue();
+        
+        parameterPair = getValuePairParameter(selection, "new");
+        exist_new = parameterPair.isKey_exist();
+        value_new = parameterPair.getValue();   
+        
+        parameterPair = getValuePairParameter(selection, "type");
+        exist_type = parameterPair.isKey_exist();
+        value_type = parameterPair.getValue();
+        
+        parameterPair = getValuePairParameter(selection, "date");
+        exist_date = parameterPair.isKey_exist();
+        value_date = parameterPair.getValue();
+        parameter_date = parameterPair.getParameter();
+        
+        StringBuilder sbISs = new StringBuilder();
+        if(IDsArray != null) {
+            for(String str : IDsArray) {
+                sbISs.append("["+str+"]");
+            }
+        }
+        
+//        System.out.println("PARSED: " + ((exist_is_read)? "READ" 
+        Log.i("_CallLogProvider","PARSED: " + ((exist_is_read)? "READ" 
+                + ", value_is_read = " + value_is_read 
+                + ", " + (isParameterNegated(selection, "is_read")?"NEGATED ### ":" ### "): "")
+                
+                + ((exist_new)? " NEW" 
+                + ", value_new = " + value_new 
+                + ", " + (isParameterNegated(selection, "new")?"NEGATED ### ":" ### "): "")
+                
+                + ((exist_type)? " TYPE" 
+                + ", value_type = " + value_type 
+                + ", " + (isParameterNegated(selection, "type")?"NEGATED ### ":" ### "): "")
+                
+                + ((exist_date)? " DATE" 
+                + ", value_date = " + value_date 
+                + ", parameter_date: " + parameter_date
+                + ", "+ (isParameterNegated(selection, "date")?"NEGATED ### ":" ### "): "")
+                
+                + " IDs = " + sbISs.toString());
+    }
+    
+    static class ParameterPair{
+        final boolean key_exist;
+        final String value;
+        final String parameter;
+        
+        public ParameterPair(boolean key_exist, String value, String parameter) {
+            this.key_exist = key_exist;
+            this.value = value;
+            this.parameter = parameter;
+        }
+        
+        public boolean isKey_exist() {
+            return key_exist;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getParameter() {
+            return parameter;
+        }
+    }
+    
+    
+//    static Map.Entry<Boolean, String> getValuePairEqual(String inputText, String key){
+//        boolean exist_key = false;
+//        String value = null;
+//        
+//        if(inputText != null){
+//            final String pattern = ".*(("+key+")\\s*[=]\\s*\\d+).*";
+//            Pattern p = Pattern.compile(pattern);
+//            Matcher m = p.matcher(inputText);
+//            
+//            // Check if pattern matched at all, then parse it
+//            if(m.find()){
+//                exist_key = true;
+//                String substringIsRead = (String) inputText.replaceAll(pattern, "$1");
+//                value = (String) substringIsRead.replaceAll("[^0-9]", "");
+//            }
+//        }
+//        
+////      Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<>("Not Unique key1","1");
+//        return new AbstractMap.SimpleEntry<>(exist_key, value);
+//    }
+    
+    static ParameterPair getValuePairParameter(String inputText, String key){
+        boolean exist_key = false;
+        String value = null;
+        String parameter = null;
+        
+        if(inputText != null){
+            final String pattern = ".*(("+key+")\\s*[<=>]\\s*\\d+).*";
+            Pattern p = Pattern.compile(pattern);
+            Matcher m = p.matcher(inputText);
+            
+            // Check if pattern matched at all, then parse it
+            if(m.find()){
+                exist_key = true;
+                String substringIsRead = (String) inputText.replaceAll(pattern, "$1");
+                value = (String) substringIsRead.replaceAll("[^0-9]", "");
+                parameter = (String) substringIsRead.replaceAll("\\w", "");
+            }
+        }
+        
+//      Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<>("Not Unique key1","1");
+        return new ParameterPair(exist_key, value, parameter);
+    }
+    
+    static boolean isParameterNegated(String inputText, String key){
+        // NOT (is_read IS NOT NULL AND is_read = 0 AND date > ?)
+        
+        if(inputText != null){
+            final String pattern = ".*(NOT)\\s*(\\()(.*("+key+")\\s*[<=>]\\s*\\d+).*\\).*";
+            Pattern p = Pattern.compile(pattern);
+            Matcher m = p.matcher(inputText);
+            
+            return m.find();
+        }
+        
+        return false;
+    }
+    
+    static String[] extractIDsArray(String inputString){
+        if(inputString != null) {
+            final String pattern = ".*((_id)\\s*(IN)\\s*\\({1})(.*)(\\)).*";
+            Pattern p = Pattern.compile(pattern);
+            Matcher m = p.matcher(inputString);
+            
+            // Check if pattern matched at all, then parse it
+            if(m.find()){
+                String subStringWithIds = (String) inputString.replaceAll(pattern, "$4");
+                return subStringWithIds.split(",");
+            }
+        }
+
+        return null;
+    }
+    
+    
 }
