@@ -22,6 +22,7 @@ class GCM {
             'registration_ids' => $registatoin_ids,
             'data' => $message,
         );
+        //  add parameter delay_while_idle to deliver message while device is idles
  
         $headers = array(
             'Authorization: key=' . GOOGLE_API_KEY,

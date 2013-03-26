@@ -99,8 +99,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.putExtra(CommonUtilities.EXTRA_MESSAGE, message);
         // set intent so it does not start a new activity
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent =
                 PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setLatestEventInfo(context, title, message, intent);

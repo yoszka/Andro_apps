@@ -72,8 +72,7 @@ public final class ServerUtilities {
                 backoff *= 2;
             }
         }
-        String message = context.getString(R.string.server_register_error,
-                MAX_ATTEMPTS);
+        String message = context.getString(R.string.server_register_error, MAX_ATTEMPTS);
         CommonUtilities.displayMessage(context, message);
     }
  
@@ -124,8 +123,12 @@ public final class ServerUtilities {
         // constructs the POST body using the parameters
         while (iterator.hasNext()) {
             Entry<String, String> param = iterator.next();
-            bodyBuilder.append(param.getKey()).append('=')
-                    .append(param.getValue());
+            
+            bodyBuilder
+            	.append(param.getKey())
+            	.append('=')
+             	.append(param.getValue());
+            
             if (iterator.hasNext()) {
                 bodyBuilder.append('&');
             }
@@ -134,6 +137,7 @@ public final class ServerUtilities {
         Log.v(TAG, "Posting '" + body + "' to " + url);
         byte[] bytes = body.getBytes();
         HttpURLConnection conn = null;
+        
         try {
             Log.e("URL", "> " + url);
             conn = (HttpURLConnection) url.openConnection();

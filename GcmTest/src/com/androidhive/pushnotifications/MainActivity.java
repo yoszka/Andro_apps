@@ -70,8 +70,7 @@ public class MainActivity extends Activity {
         lblMessage.append(message + "\n");
         Toast.makeText(getApplicationContext(), "Message: " + message, Toast.LENGTH_LONG).show();
  
-        registerReceiver(mHandleMessageReceiver, new IntentFilter(
-                DISPLAY_MESSAGE_ACTION));
+        registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
  
         // Get GCM registration id
         final String regId = GCMRegistrar.getRegistrationId(this);
