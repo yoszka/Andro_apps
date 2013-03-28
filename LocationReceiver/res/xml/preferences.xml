@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="@string/registration">
+            
+        <PreferenceScreen
+            	android:key="register_singup"
+                android:title="@string/register">
+        </PreferenceScreen>
+            
+        <PreferenceScreen
+            	android:key="log_out"
+                android:title="@string/log_out"
+                android:summary="@string/log_out_summary"
+                android:enabled="false">
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+                
+    <PreferenceCategory
+            android:title="@string/localizer">
+
+        <EditTextPreference
+                android:key="locaization_count"
+                android:title="@string/locaization_count"
+                android:summary="@string/locaization_count_summary"
+                android:dialogTitle="@string/locaization_count" 
+                android:enabled="false"/>
+                
+            
+        <PreferenceScreen
+                android:key="start"
+                android:title="@string/start"
+                android:summary="@string/start_summary"
+                android:enabled="false">
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+    
+</PreferenceScreen>
+

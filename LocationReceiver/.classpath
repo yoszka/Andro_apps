@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="lib" path="libs/mysql_connector_java_3_0_17_ga_bin.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gcm.jar" sourcepath="libs/gcm-src.jar"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="C:/android-sdk-windows/add-ons/addon-google_apis-google-10/libs/maps.jar"/>
+	<classpathentry kind="lib" path="C:/android-sdk-windows/add-ons/addon-google_apis-google-10/libs/usb.jar"/>
+	<classpathentry kind="lib" path="C:/android-sdk-windows/add-ons/addon-google_apis-google-10"/>
+	<classpathentry kind="lib" path="C:/android-sdk-windows/platforms/android-10/android.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

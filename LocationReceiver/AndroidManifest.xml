@@ -9,7 +9,16 @@
         android:targetSdkVersion="10" />
     
     <uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>    
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>   
+	
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="pl.xt.jokii.locationreceiver.permission.C2D_MESSAGE"/>
+    <permission 
+        android:name="pl.xt.jokii.locationreceiver.permission.C2D_MESSAGE" 
+        android:protectionLevel="signature" />	
 
     <application
         android:allowBackup="true"
@@ -25,9 +34,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="LocationGetter"></service>
+        <service android:name="LocationDbGetter"></service>
+        
+        <activity
+            android:name="MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" >
+        </activity>
+        <!-- Register Activity -->
+        <activity
+            android:name="RegisterActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <receiver 
+            android:name="com.google.android.gcm.GCMBroadcastReceiver" 
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+                <category android:name="pl.xt.jokii.locationreceiver"/>
+            </intent-filter>
+        </receiver>
+                <!--category android:name="pl.xt.jokii.pushnotification"/-->
+        <service android:name="GCMIntentService"></service>
         
         <uses-library android:name="com.google.android.maps" />
+        
+        
+        <activity android:name=".settings.SettingsActivity"></activity>
     </application>
 
 </manifest>
