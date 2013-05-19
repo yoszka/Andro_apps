@@ -188,6 +188,7 @@ public class SettingsActivity extends PreferenceActivity implements OnUsersGetLi
 	        			mMyID = user.getId();
 //	        			mStart.setEnabled(true);								// Enable "Start" option
 //	        			mStart.setSummary(getResources().getString(R.string.start_summary) + "\n(ID: "+mMyID+")");
+	        			mRegisterSingup.setSummary(getResources().getString(R.string.register_summary_on_already_registered) + " (ID: "+mMyID+")");
 	        		}
 	        	}
 	        }

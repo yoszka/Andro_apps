@@ -12,6 +12,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -100,7 +103,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     		
     		if((token != null) && (token.equals(CommonUtilities.TOKEN_EVENT))){
 //    		if(true){
-    			int icon = R.drawable.ic_launcher;
+    			int icon = R.drawable.ic_launcher_main;
     			long when = System.currentTimeMillis();
     			String msg   = message.getString(CommonUtilities.EXTRA_MESSAGE);
 //    			String msg   = message.getString("price");
@@ -124,7 +127,8 @@ public class GCMIntentService extends GCMBaseIntentService {
     			notification.flags |= Notification.FLAG_AUTO_CANCEL;
 //    			
 //    			// Play default notification sound
-    			notification.defaults |= Notification.DEFAULT_SOUND;
+//    			notification.defaults |= Notification.DEFAULT_SOUND;
+    			playLocalAudio(context);
 //    			
 //    			// Vibrate if vibrate is enabled
     			notification.defaults |= Notification.DEFAULT_VIBRATE;
@@ -156,5 +160,37 @@ public class GCMIntentService extends GCMBaseIntentService {
     	}
  
     }
+    
+	private static void playLocalAudio(Context context) {
+		final AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+		if (audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) != 0) {
+			
+			// Read current levels
+			final int volumeMusic = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+			final int volumeNotif = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);		
+			
+			// read max levels
+			final int maxVolumeMusic = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+			final int maxVolumeNotif = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+			
+			// set volume for stream music same as for notification
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (volumeNotif * maxVolumeMusic) / maxVolumeNotif, 0);
+			
+//			Log.v("ALARM volumeMusic", ((volumeNotif * maxVolumeMusic) / maxVolumeNotif)+"");
+//			Log.v("ALARM volumeNotif", volumeNotif+"");			
+			
+			MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sdwin);
+			mediaPlayer.start();
+			mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+				
+				public void onCompletion(MediaPlayer mp) {
+					// Get back to orginal volume level
+					audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeMusic, 0);
+//					Log.v("ALARM volumeMusic", volumeMusic+"");
+//					Log.v("ALARM volumeNotif", volumeNotif+"");					
+				}
+			});
+		}	
+	}
  
 }

@@ -16,6 +16,6 @@
     <string name="locaization_count_summary">How many times location will be updates</string>
     <string name="start">Start</string>
     <string name="start_summary">Send localization request to remote device</string-->
-    <string name="register_summary_on_already_registered">Already registered</string>
+    <string name="register_summary_on_already_registered">Registered</string>
 
 </resources>
