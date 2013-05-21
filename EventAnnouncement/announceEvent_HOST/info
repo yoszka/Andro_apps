@@ -1,0 +1,5 @@
+# To compile '*.c' file use following command:
+
+gcc -o announceEvent announceEvent.c
+
+
