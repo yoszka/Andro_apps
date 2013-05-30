@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="lux_med_firma">6960</integer>	<!-- wysokość stawki płaconej przez firmę w groszach -->
+    <integer name="multisport_firma">4652</integer>	<!-- wysokość stawki płaconej przez firmę w groszach -->
+    <integer name="aviva_firma">2500</integer>		<!-- wysokość stawki płaconej przez firmę w groszach -->
+    
+    <integer name="lux_med_pracownik">400</integer>		<!-- wysokość stawki płaconej przez pracownika w groszach -->
+    <integer name="multisport_pracownik">4575</integer>	<!-- wysokość stawki płaconej przez pracownika w groszach -->
+    
+    
+    <integer name="podatekZus">1371</integer>				<!-- podatek w setnej części procenta (X*0,01) -->
+    <integer name="podatekZdrowotne">900</integer>			<!-- podatek w setnej części procenta (X*0,01) -->
+    <integer name="zaliczka_podatku">50000</integer>		<!-- zaliczka  pod.doch. w groszach-->
+</resources>

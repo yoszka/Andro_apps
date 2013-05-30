@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GCPaymentCalculator</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="brutto">Brutto</string>
+    <string name="bony">Bony</string>
+    <string name="brutto_hint">brutto na uowie</string>
+    <string name="multisport">Multisport</string>
+    <string name="aviva">"Aviva"</string>
+    <string name="lux_med">"Lux Med (e2, partner)"</string>
+    <string name="przychod">"PRZYCHÓD"</string>
+    <string name="rozchod">"ROZCHÓD"</string>
+    <string name="na_reke">"NA RĘKĘ (Z BONAMI)"</string>
+
+</resources>
