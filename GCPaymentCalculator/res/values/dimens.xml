@@ -4,5 +4,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="element_distance">10dp</dimen>
+    <dimen name="element_distance_medium">20dp</dimen>
 
 </resources>

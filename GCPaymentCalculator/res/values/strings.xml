@@ -12,6 +12,6 @@
     <string name="lux_med">"Lux Med (e2, partner)"</string>
     <string name="przychod">"PRZYCHÓD"</string>
     <string name="rozchod">"ROZCHÓD"</string>
-    <string name="na_reke">"NA RĘKĘ (Z BONAMI)"</string>
+    <string name="na_reke">"NA RĘKĘ (Z BONAMI)"</string><string name="dodaj">Dodaj</string><string name="edycja">Edycja</string>
 
 </resources>
