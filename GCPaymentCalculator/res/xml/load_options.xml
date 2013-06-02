@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        android:key="pref_screen">
+    <ListPreference
+            android:key="lp_android_choice"
+            android:entries="@array/array_lp_entries"
+            android:entryValues="@array/array_lp_entry_values"
+            android:title="@string/load_options"
+            />
+</PreferenceScreen>

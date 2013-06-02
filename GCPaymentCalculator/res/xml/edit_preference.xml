@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="option_name"
+        android:title="@string/option_name"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"/>
+
+    <EditTextPreference
+        android:key="option_palci_firma"
+        android:title="@string/pay_company"
+        android:inputType="numberDecimal"
+        android:numeric="decimal"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"/>
+
+    <EditTextPreference
+        android:key="option_palci_pracownik"
+        android:title="@string/pay_employee"
+        android:inputType="numberDecimal"
+        android:numeric="decimal"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"/>
+
+    <PreferenceScreen
+            android:key="remove_option"
+            android:title="@string/remove_option"/>
+</PreferenceScreen>

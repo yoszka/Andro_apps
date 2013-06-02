@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="@string/brutto"
+            android:text="@string/gross"
             android:layout_gravity="left|center_vertical"/>
 
         <EditText
@@ -42,7 +42,7 @@
             android:layout_alignLeft="@+id/textViewBrutto"
             android:layout_below="@+id/textViewBrutto"
             android:ems="10"
-            android:hint="@string/brutto_hint"
+            android:hint="@string/gross_hint"
             android:layout_gravity="left|center_vertical"
             android:inputType="numberDecimal"
             android:numeric="decimal"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/editTextBrutto"
             android:layout_below="@+id/editTextBrutto"
-            android:text="@string/bony"
+            android:text="@string/coupons"
             android:layout_gravity="left|center_vertical"/>
 
         <EditText
@@ -119,14 +119,15 @@
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dodaj"
-                android:id="@+id/button"/>
+                android:text="@string/add"
+                android:id="@+id/button"
+                android:onClick="onClickButtonAdd"/>
 
         <TextView
             android:id="@+id/textViewPrzychod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/przychod"
+            android:text="@string/income"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_marginTop="@dimen/element_distance_medium"/>
 
@@ -142,7 +143,7 @@
             android:id="@+id/textViewRozchod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rozchod"
+            android:text="@string/outcome"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <EditText
@@ -157,7 +158,7 @@
             android:id="@+id/textViewNaReke"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/na_reke"
+            android:text="@string/net"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <EditText
@@ -167,6 +168,13 @@
             android:ems="10"
             android:inputType="number"
             android:enabled="false"/>
+
+        <fragment
+                android:id="@+id/list_preference"
+                android:name="pl.xt.jokii.gcpaymentcalculator.LoadOptionsPreferenceFragment"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                />
 
     </LinearLayout>
     </ScrollView>

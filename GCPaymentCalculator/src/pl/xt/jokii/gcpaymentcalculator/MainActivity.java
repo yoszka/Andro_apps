@@ -2,27 +2,37 @@
 package pl.xt.jokii.gcpaymentcalculator;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    
+
+    public static final String OPTION_INDEX = "OPTION_INDEX";
     EditText brutto;
     EditText bony;
     EditText przychod;
     EditText rozchod;
     EditText naReke;
     LinearLayout listaOpcji;
+    OptionManager optionManager;
     
     private static double firmaLuxMed;
     private static double firmaMultisport;
@@ -48,31 +58,41 @@ public class MainActivity extends Activity {
         brutto.addTextChangedListener(mValueChangeListener);
         bony.addTextChangedListener(mValueChangeListener);
         
-        firmaLuxMed         = getResources().getInteger(R.integer.lux_med_firma)        / 100.0;
-        firmaMultisport     = getResources().getInteger(R.integer.multisport_firma)     / 100.0;
-        firmaAviva          = getResources().getInteger(R.integer.aviva_firma)          / 100.0;
-        pracownikLuxMed     = getResources().getInteger(R.integer.lux_med_pracownik)    / 100.0;
-        pracownikMultisport = getResources().getInteger(R.integer.multisport_pracownik) / 100.0;
+        firmaLuxMed         = getResources().getInteger(R.integer.lux_med_company)        / 100.0;
+        firmaMultisport     = getResources().getInteger(R.integer.multisport_company)     / 100.0;
+        firmaAviva          = getResources().getInteger(R.integer.aviva_company)          / 100.0;
+        pracownikLuxMed     = getResources().getInteger(R.integer.lux_med_employee)    / 100.0;
+        pracownikMultisport = getResources().getInteger(R.integer.multisport_employee) / 100.0;
         podatekZusProcent   = getResources().getInteger(R.integer.podatekZus)           / 10000.0;
         podatekZdrowProcent = getResources().getInteger(R.integer.podatekZdrowotne)     / 10000.0;
         zaliczka_podatku    = getResources().getInteger(R.integer.zaliczka_podatku)     / 100.0;
 
-        addOption(R.string.multisport, firmaMultisport, pracownikMultisport);
-        addOption(R.string.aviva, firmaAviva, 0);
-        addOption(R.string.lux_med, firmaLuxMed, pracownikLuxMed);
+
+        optionManager = new OptionManager(getApplication());
+
+        loadCurrentOptions();
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
 
     private class Option{
         final double placiFirma;
         final double placiPracownik;
         final CheckBox chbx;
+        final Button btn;
 
-        Option(CheckBox chbx, double placiFirma, double placiPracownik){
+        Option(CheckBox chbx, Button btn, double placiFirma, double placiPracownik){
             this.chbx = chbx;
             this.placiFirma = placiFirma;
             this.placiPracownik = placiPracownik;
+            this.btn = btn;
         }
     }
 
@@ -86,9 +106,9 @@ public class MainActivity extends Activity {
      * @param textResourceID resource id with option name
      * @param placiFirma how many pay company for this option
      * @param placiPracownik how many pay employee for this option
-     * @return
+     * @return index of option
      */
-    private Option addOption(int textResourceID, double placiFirma, double placiPracownik){
+    private int addOption(int textResourceID, double placiFirma, double placiPracownik){
         return addOption(getApplicationContext().getResources().getString(textResourceID), placiFirma, placiPracownik);
     }
 
@@ -98,17 +118,18 @@ public class MainActivity extends Activity {
      * @param text  option name
      * @param placiFirma how many pay company for this option
      * @param placiPracownik how many pay employee for this option
-     * @return
+     * @return index of option
      */
-    private Option addOption(String text, double placiFirma, double placiPracownik){
+    private int addOption(String text, double placiFirma, double placiPracownik){
         RelativeLayout  opcjaRow = (RelativeLayout) getLayoutInflater().inflate(R.layout.list_item, null);
         CheckBox chbx = (CheckBox) opcjaRow.findViewById(R.id.checkBox);
+        Button btn = (Button) opcjaRow.findViewById(R.id.button);
         chbx.setText(text);
         chbx.setOnCheckedChangeListener(checkBoxCheckedChangeListener);
         listaOpcji.addView(opcjaRow);
-        Option opcja = new Option(chbx, placiFirma, placiPracownik);
+        Option opcja = new Option(chbx, btn, placiFirma, placiPracownik);
         optionList.add(opcja);
-        return opcja;
+        return (optionList.size() - 1);
     }
 
     
@@ -134,17 +155,34 @@ public class MainActivity extends Activity {
           updateCalculation();
       }
   };
-    
+
+    /**
+     * Load/reLoad current options from application data
+     */
+    private void loadCurrentOptions(){
+        // first remove all previous options
+        listaOpcji.removeAllViewsInLayout();
+        optionList.clear();
+        ArrayList<OptionStore> options = optionManager.getCurrentOptions();
+        for(OptionStore option : options){
+            addOption(option.name, option.payCompany, option.payEmployee);
+        }
+    }
+
+
+    /**
+     * Update calculation and show in View proper values
+     */
     private void  updateCalculation() {
         String valueTmp = null;
         double valueBrutto              = 0.0;
         double valueBony                = 0.0;
-        double przychodySuma            = 0.0;
+        double przychodySuma;
         double przychodySumaOptions     = 0.0;
         double placiPracownikSumaOptions= 0.0;
-        double rozchodySuma             = 0.0;
-        double naRekeValue              = 0.0;
-        double sumaSkladekZus           = 0.0;
+        double rozchodySuma;
+        double naRekeValue;
+        double sumaSkladekZus;
         
         // Obliczanie podstawy (przychodów) do policzenia wysokości podatku
         valueTmp = brutto.getText().toString();
@@ -184,6 +222,92 @@ public class MainActivity extends Activity {
         przychod.setText(String.format("%.2f", przychodySuma));
         rozchod.setText(String.format("%.2f", rozchodySuma));
         naReke.setText(String.format("%.2f", naRekeValue));
+    }
+
+    /**
+     * Button "Add"
+     * @param v
+     */
+    public void onClickButtonAdd(View v){
+        int optionIndex = addOption("Nazwa opcji", 0, 0);
+        Option option = optionList.get(optionIndex);
+        optionManager.addCurrentOption(new OptionStore("Nazwa opcji", option.placiFirma, option.placiPracownik));
+        Intent intent = new Intent(this, EditOptionPreference.class);
+        intent.putExtra(OPTION_INDEX, optionIndex);
+        startActivityForResult(intent, R.id.edit_option_preference);
+        updateCalculation();
+    }
+
+    /**
+     * Button "Edit"
+     * @param v
+     */
+    public void onClickButtonEdit(View v){
+        Intent intent = new Intent(this, EditOptionPreference.class);
+        intent.putExtra(OPTION_INDEX, getOptionIndexByButton((Button) v));
+        startActivityForResult(intent, R.id.edit_option_preference);
+    }
+
+    /**
+     * Menu "Load options"
+     * @param mi
+     */
+    public void onClickMenuLoadOptions(MenuItem mi){
+        showLoadOptionsDialog();
+    }
+
+    /**
+     * Menu "Save options"
+     * @param mi
+     */
+    public void onClickMenuSaveOptions(MenuItem mi){
+        optionManager.storeCurrentOptions("Some name 2");
+        Toast.makeText(getApplicationContext(), "Saved", 0).show();
+    }
+
+    /**
+     * Get option index from options array by id of contained "Edit" button
+     * @param button
+     * @return
+     */
+    private Integer getOptionIndexByButton(Button button){
+        int index = 0;
+        for(Option o : optionList){
+            if(o.btn == button){
+                return index;
+            }
+            index++;
+        }
+        return null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if((requestCode == R.id.edit_option_preference)){
+            // reload options after change
+            loadCurrentOptions();
+            updateCalculation();
+        }
+    }
+
+    private void showLoadOptionsDialog(){
+        LoadOptionsPreferenceFragment fragment = (LoadOptionsPreferenceFragment) getFragmentManager().findFragmentById(R.id.list_preference);
+        fragment.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                Toast.makeText(getApplicationContext(), (String) o, 0).show();
+                optionManager.restoreCurrentOptions((String) o);
+                loadCurrentOptions();
+                updateCalculation();
+                return true;
+            }
+        });
+        if(fragment.loadStoredOptions()){
+            fragment.show();
+        }else{
+            Toast.makeText(getApplicationContext(), "No options found", 0).show();
+        }
     }
 
 }

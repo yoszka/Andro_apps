@@ -22,15 +22,36 @@
       </layout>
     </layouts>
   </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="ERROR" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" name="Default" comment="" />
     <ignored path="GCPaymentCalculator.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/activity_main.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1369929869331" ignored="false" />
+    <file path="/activity_main.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370205125252" ignored="false" />
     <file path="/dimens.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1369926909929" ignored="false" />
-    <file path="/MainActivity.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1369935269798" ignored="false" />
+    <file path="/MainActivity.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370207847795" ignored="false" />
     <file path="/Dummy.txt" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1369928536170" ignored="false" />
-    <file path="/list_item.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1369931879735" ignored="false" />
+    <file path="/list_item.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1369945369648" ignored="false" />
+    <file path="/EditOptionPreference.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370111343300" ignored="false" />
+    <file path="/edit_preference.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370109206835" ignored="false" />
+    <file path="/strings.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370198128857" ignored="false" />
+    <file path="/AndroidManifest.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370091302387" ignored="false" />
+    <file path="/ids.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1369946006170" ignored="false" />
+    <file path="$PROJECT_DIR$/../DownloadManagerProject/DownloadManager/src/main/res/layout/activity_main.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370081356865" ignored="false" />
+    <file path="$PROJECT_DIR$/../DownloadManagerProject/DownloadManager/src/main/java/com/example/downloadmanager/MainActivity.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370088785531" ignored="false" />
+    <file path="$PROJECT_DIR$/../DownloadManagerProject/DownloadManager/build/res/all/debug/layout/activity_main.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370089085045" ignored="false" />
+    <file path="$PROJECT_DIR$/../DownloadManagerProject/DownloadManager/build/source/r/debug/com/example/downloadmanager/R.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370089085045" ignored="false" />
+    <file path="$PROJECT_DIR$/../DownloadManagerProject/DownloadManager/src/main/AndroidManifest.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370091599629" ignored="false" />
+    <file path="/fragment.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370107738014" ignored="false" />
+    <file path="/OptionManager.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370207471069" ignored="false" />
+    <file path="/OptionStore.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370101144342" ignored="false" />
+    <file path="/a.dummy" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370107758795" ignored="false" />
+    <file path="$APPLICATION_HOME_DIR$/plugins/android/lib/android.jar!/org/jetbrains/android/android.xsd" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370108173964" ignored="false" />
+    <file path="/main.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370198624312" ignored="false" />
+    <file path="/load_options.xml" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370204910393" ignored="false" />
+    <file path="/LoadOptionsPreferenceFragment.java" changelist="4b54b2dd-6e9c-42bb-be13-41fd3f7901fe" time="1370206666028" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +59,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="Commander">
+    <leftPanel />
+    <rightPanel />
+    <splitter proportion="0.5" />
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
@@ -45,7 +71,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -82,6 +107,7 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -91,46 +117,127 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="activity_main.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/activity_main.xml">
-          <provider editor-type-id="text-editor">
-            <state line="115" column="60" selection-start="4596" selection-end="4596" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#1338#1354#0" expanded="true" />
-                <element signature="e#1744#1765#0" expanded="true" />
-                <element signature="e#2296#2310#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-          <provider selected="true" editor-type-id="android-designer">
-            <state />
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MainActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="46" selection-start="951" selection-end="951" vertical-scroll-proportion="0.6307978">
+            <state line="297" column="22" selection-start="10362" selection-end="10362" vertical-scroll-proportion="0.5372051">
               <folding>
-                <element signature="e#3149#3157#0" expanded="true" />
-                <element signature="e#4924#5097#0" expanded="true" />
-                <element signature="e#5092#5093#0" expanded="true" />
+                <element signature="e#3682#3690#0" expanded="true" />
+                <element signature="e#10681#10682#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="list_item.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/list_item.xml">
+      <file leaf-file-name="load_options.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/xml/load_options.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="33" selection-start="583" selection-end="583" vertical-scroll-proportion="-10.2">
+            <state line="7" column="48" selection-start="380" selection-end="380" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="e#773#789#0" expanded="true" />
+                <element signature="e#358#380#0" expanded="true" />
               </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OptionManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/OptionManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="174" column="32" selection-start="6373" selection-end="6373" vertical-scroll-proportion="-10.153846">
+              <folding>
+                <element signature="e#1456#1469#0" expanded="true" />
+                <element signature="e#2069#2082#0" expanded="true" />
+                <element signature="e#5708#5741#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EditOptionPreference.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/EditOptionPreference.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="46" selection-start="767" selection-end="767" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3188#3565#0" expanded="true" />
+                <element signature="e#3554#3555#0" expanded="true" />
+                <element signature="e#3770#4777#0" expanded="true" />
+                <element signature="e#4770#4771#0" expanded="true" />
+                <element signature="e#4849#5051#0" expanded="true" />
+                <element signature="e#5044#5045#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="33" selection-start="262" selection-end="262" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="edit_preference.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/xml/edit_preference.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_main.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/layout/activity_main.xml">
           <provider editor-type-id="android-designer">
             <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="172" column="48" selection-start="6670" selection-end="6685" vertical-scroll-proportion="-11.88">
+              <folding>
+                <element signature="e#1338#1353#0" expanded="true" />
+                <element signature="e#1743#1763#0" expanded="true" />
+                <element signature="e#2294#2311#0" expanded="true" />
+                <element signature="e#4805#4818#0" expanded="true" />
+                <element signature="e#5101#5117#0" expanded="true" />
+                <element signature="e#5448#5452#0" expanded="true" />
+                <element signature="e#5995#5999#0" expanded="true" />
+                <element signature="e#6536#6540#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LoadOptionsPreferenceFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/LoadOptionsPreferenceFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="79" column="78" selection-start="3154" selection-end="3154" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="36" selection-start="487" selection-end="487" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/menu/main.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="47" selection-start="482" selection-end="504" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#214#236#0" expanded="true" />
+                <element signature="e#434#456#0" expanded="true" />
+              </folding>
+            </state>
           </provider>
         </entry>
       </file>
@@ -144,17 +251,30 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/res/values/dimens.xml" />
-        <option value="$PROJECT_DIR$/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/res/layout/list_item.xml" />
+        <option value="$PROJECT_DIR$/res/values/ids.xml" />
+        <option value="$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/Option.java" />
+        <option value="$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/OptionStore.java" />
+        <option value="$PROJECT_DIR$/res/xml/edit_preference.xml" />
+        <option value="$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/EditOptionPreference.java" />
+        <option value="$PROJECT_DIR$/res/values/integer_values.xml" />
+        <option value="$PROJECT_DIR$/res/values-pl/strings.xml" />
+        <option value="$PROJECT_DIR$/res/menu/main.xml" />
+        <option value="$PROJECT_DIR$/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/res/xml/load_options.xml" />
+        <option value="$PROJECT_DIR$/res/layout/activity_main.xml" />
+        <option value="$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/LoadOptionsPreferenceFragment.java" />
+        <option value="$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/OptionManager.java" />
         <option value="$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/MainActivity.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="10" />
-    <option name="width" value="1900" />
-    <option name="height" value="1040" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -183,7 +303,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -233,6 +352,42 @@
               <option name="myItemId" value="res" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xml" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GCPaymentCalculator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GCPaymentCalculator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GCPaymentCalculator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GCPaymentCalculator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values-pl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -272,21 +427,29 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="OverrideImplement.combined" value="true" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="options.lastSelected" value="preferences.keymap" />
-    <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="last_opened_file_path" value="$USER_HOME$/Android studioProjects" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="MemberChooser.copyJavadoc" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Tomek\workspace\GCPaymentCalculator\res\values-pl" />
+    </key>
   </component>
   <component name="RunManager" selected="Android Application.GCPaymentCalculator">
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
@@ -414,6 +577,11 @@
     </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SliceManager">
+    <option name="analysisUIOptions">
+      <AnalysisUIOptions />
+    </option>
+  </component>
   <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="all">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
@@ -437,12 +605,13 @@
       <created>1369920806135</created>
       <updated>1369920806135</updated>
       <workItem from="1369920818505" duration="391000" />
-      <workItem from="1369926483972" duration="9102000" />
+      <workItem from="1369926483972" duration="22567000" />
+      <workItem from="1370107201362" duration="19822000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9493000" />
+    <option name="totallyTimeSpent" value="42780000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -465,29 +634,29 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="10" y="0" width="1900" height="1040" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32589772" sideWeight="0.670068" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32352942" sideWeight="0.670068" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295207" sideWeight="0.670068" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3997773" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879817" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32993197" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32293987" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993197" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24891068" sideWeight="0.670068" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879817" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24866596" sideWeight="0.6714922" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32850778" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32550693" sideWeight="0.67594653" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32337245" sideWeight="0.67594653" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -555,60 +724,148 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/res/layout/activity_main.xml">
-      <provider editor-type-id="text-editor">
-        <state line="88" column="52" selection-start="3312" selection-end="3312" vertical-scroll-proportion="0.0">
+    <entry file="file://$PROJECT_DIR$/res/values/integer_values.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="0" selection-start="614" selection-end="614" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gen/pl/xt/jokii/gcpaymentcalculator/R.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="19" selection-start="182" selection-end="182" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/values-pl/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="47" selection-start="735" selection-end="778" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/java/lang/Class.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="122" column="0" selection-start="5265" selection-end="5265" vertical-scroll-proportion="0.82073814">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/java/util/Collection.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="17" selection-start="156" selection-end="156" vertical-scroll-proportion="0.14731368">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/java/util/Set.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="47" selection-start="186" selection-end="186" vertical-scroll-proportion="0.14731368">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/EditOptionPreference.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="46" selection-start="767" selection-end="767" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#1338#1354#0" expanded="true" />
-            <element signature="e#1744#1765#0" expanded="true" />
-            <element signature="e#2296#2310#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#3188#3565#0" expanded="true" />
+            <element signature="e#3554#3555#0" expanded="true" />
+            <element signature="e#3770#4777#0" expanded="true" />
+            <element signature="e#4770#4771#0" expanded="true" />
+            <element signature="e#4849#5051#0" expanded="true" />
+            <element signature="e#5044#5045#0" expanded="true" />
           </folding>
         </state>
       </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/xml/edit_preference.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/res/values/dimens.xml">
+    <entry file="file://$PROJECT_DIR$/res/menu/main.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="43" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0">
+        <state line="13" column="47" selection-start="482" selection-end="504" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#214#236#0" expanded="true" />
+            <element signature="e#434#456#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="33" selection-start="262" selection-end="262" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/res/layout/activity_main.xml">
-      <provider selected="true" editor-type-id="android-designer">
+      <provider editor-type-id="android-designer">
         <state />
       </provider>
-      <provider editor-type-id="text-editor">
-        <state line="115" column="60" selection-start="4596" selection-end="4596" vertical-scroll-proportion="0.0">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="172" column="48" selection-start="6670" selection-end="6685" vertical-scroll-proportion="-11.88">
           <folding>
-            <element signature="e#1338#1354#0" expanded="true" />
-            <element signature="e#1744#1765#0" expanded="true" />
-            <element signature="e#2296#2310#0" expanded="true" />
+            <element signature="e#1338#1353#0" expanded="true" />
+            <element signature="e#1743#1763#0" expanded="true" />
+            <element signature="e#2294#2311#0" expanded="true" />
+            <element signature="e#4805#4818#0" expanded="true" />
+            <element signature="e#5101#5117#0" expanded="true" />
+            <element signature="e#5448#5452#0" expanded="true" />
+            <element signature="e#5995#5999#0" expanded="true" />
+            <element signature="e#6536#6540#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/list_item.xml">
+    <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="33" selection-start="583" selection-end="583" vertical-scroll-proportion="-10.2">
+        <state line="11" column="36" selection-start="487" selection-end="487" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/LoadOptionsPreferenceFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="79" column="78" selection-start="3154" selection-end="3154" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#773#789#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
-      <provider editor-type-id="android-designer">
-        <state />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/xml/load_options.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="48" selection-start="380" selection-end="380" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#358#380#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/OptionManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="174" column="32" selection-start="6373" selection-end="6373" vertical-scroll-proportion="-10.153846">
+          <folding>
+            <element signature="e#1456#1469#0" expanded="true" />
+            <element signature="e#2069#2082#0" expanded="true" />
+            <element signature="e#5708#5741#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pl/xt/jokii/gcpaymentcalculator/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="46" selection-start="951" selection-end="951" vertical-scroll-proportion="0.6307978">
+        <state line="297" column="22" selection-start="10362" selection-end="10362" vertical-scroll-proportion="0.5372051">
           <folding>
-            <element signature="e#3149#3157#0" expanded="true" />
-            <element signature="e#4924#5097#0" expanded="true" />
-            <element signature="e#5092#5093#0" expanded="true" />
+            <element signature="e#3682#3690#0" expanded="true" />
+            <element signature="e#10681#10682#0" expanded="true" />
           </folding>
         </state>
       </provider>
