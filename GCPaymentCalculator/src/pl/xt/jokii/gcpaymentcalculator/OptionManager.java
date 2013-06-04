@@ -203,6 +203,22 @@ public class OptionManager {
             return true;
         }
     }
+    /**
+     * remove given options set from storage
+     * @param name options set to remove from storage
+     * @return true if success, false otherwise (no option found)
+     */
+    public boolean removeFromOptionsStorage(String name){
+        boolean result = false;
+        HashMap<String, ArrayList<OptionStore> > optionsMap = loadOptions();
+
+        result = (optionsMap.remove(name) != null);
+        if(result){
+            saveOptions(optionsMap);
+        }
+
+        return result;
+    }
 
     /**
      * Update current options named "name"

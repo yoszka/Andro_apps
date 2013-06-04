@@ -170,7 +170,7 @@
             android:enabled="false"/>
 
         <fragment
-                android:id="@+id/list_preference"
+                android:id="@+id/embeded_preference"
                 android:name="pl.xt.jokii.gcpaymentcalculator.LoadOptionsPreferenceFragment"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

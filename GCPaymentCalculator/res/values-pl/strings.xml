@@ -14,7 +14,13 @@
     <string name="pay_company">Płaci firma</string>
     <string name="pay_employee">Płaci pracownik</string>
     <string name="remove_option">Usuń opcję</string>
-    <string name="load_options">Wczytaj</string>
-    <string name="save_options">Zapisz</string>
+    <string name="load_options">Wczytaj opcje</string>
+    <string name="save_options">Zapisz opcje</string>
+    <string name="remove_options">Unuń opcje</string>
+    <string name="no_options_found">Nie znaleziono opcji</string>
+    <string name="options_saved">ZAPISANO</string>
+    <string name="default_option_name">Nazwa opcji</string>
+    <string name="removed">USUNIĘTO</string>
+    <string name="loaded">WCZYTANO</string>
 
 </resources>

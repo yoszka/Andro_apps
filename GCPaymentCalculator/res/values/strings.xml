@@ -18,6 +18,12 @@
     <string name="remove_option">Remove option</string>
     <string name="load_options">Load options</string>
     <string name="save_options">Save options</string>
+    <string name="remove_options">Remove options</string>
+    <string name="no_options_found">No options found</string>
+    <string name="options_saved">SAVED</string>
+    <string name="default_option_name">Option name</string>
+    <string name="removed">REMOVED</string>
+    <string name="loaded">LOADED</string>
 
     <string-array name="array_lp_entries">
         <item>Jelly Bean</item>

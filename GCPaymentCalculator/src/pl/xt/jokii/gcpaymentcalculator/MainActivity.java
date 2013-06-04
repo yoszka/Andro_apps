@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
 
 
     /**
-     * Update calculation and show in View proper values
+     * Update calculation and showLoadOptionsList in View proper values
      */
     private void  updateCalculation() {
         String valueTmp = null;
@@ -229,9 +229,10 @@ public class MainActivity extends Activity {
      * @param v
      */
     public void onClickButtonAdd(View v){
-        int optionIndex = addOption("Nazwa opcji", 0, 0);
+        final String defaultOptionName = getResources().getString(R.string.default_option_name);
+        int optionIndex = addOption(defaultOptionName, 0, 0);
         Option option = optionList.get(optionIndex);
-        optionManager.addCurrentOption(new OptionStore("Nazwa opcji", option.placiFirma, option.placiPracownik));
+        optionManager.addCurrentOption(new OptionStore(defaultOptionName, option.placiFirma, option.placiPracownik));
         Intent intent = new Intent(this, EditOptionPreference.class);
         intent.putExtra(OPTION_INDEX, optionIndex);
         startActivityForResult(intent, R.id.edit_option_preference);
@@ -261,8 +262,15 @@ public class MainActivity extends Activity {
      * @param mi
      */
     public void onClickMenuSaveOptions(MenuItem mi){
-        optionManager.storeCurrentOptions("Some name 2");
-        Toast.makeText(getApplicationContext(), "Saved", 0).show();
+        showSaveOptionsDialog();
+    }
+
+    /**
+     * Menu "Remove options"
+     * @param mi
+     */
+    public void onClickMenuRemoveOptions(MenuItem mi){
+        showRemoveOptionsDialog();
     }
 
     /**
@@ -292,22 +300,58 @@ public class MainActivity extends Activity {
     }
 
     private void showLoadOptionsDialog(){
-        LoadOptionsPreferenceFragment fragment = (LoadOptionsPreferenceFragment) getFragmentManager().findFragmentById(R.id.list_preference);
+        final LoadOptionsPreferenceFragment fragment = (LoadOptionsPreferenceFragment) getFragmentManager().findFragmentById(R.id.embeded_preference);
+        fragment.getListPreference().setDialogTitle(R.string.load_options);
         fragment.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                Toast.makeText(getApplicationContext(), (String) o, 0).show();
-                optionManager.restoreCurrentOptions((String) o);
-                loadCurrentOptions();
-                updateCalculation();
-                return true;
-            }
-        });
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.loaded)+" \""+((String) o)+"\"", 0).show();
+                    optionManager.restoreCurrentOptions((String) o);
+                    loadCurrentOptions();
+                    updateCalculation();
+                    return true;
+            }});
         if(fragment.loadStoredOptions()){
-            fragment.show();
+            fragment.showLoadOptionsList();
         }else{
-            Toast.makeText(getApplicationContext(), "No options found", 0).show();
+            Toast.makeText(getApplicationContext(), R.string.no_options_found, 0).show();
         }
+    }
+
+
+    private void showRemoveOptionsDialog(){
+        final LoadOptionsPreferenceFragment fragment = (LoadOptionsPreferenceFragment) getFragmentManager().findFragmentById(R.id.embeded_preference);
+        fragment.getListPreference().setDialogTitle(R.string.remove_options);
+        fragment.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                    optionManager.removeFromOptionsStorage((String) o);
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.removed)+" \""+((String) o)+"\"", 0).show();
+                    return true;
+            }});
+        if(fragment.loadStoredOptions()){
+            fragment.showLoadOptionsList();
+        }else{
+            Toast.makeText(getApplicationContext(), R.string.no_options_found, 0).show();
+        }
+    }
+
+
+    private void showSaveOptionsDialog(){
+        final LoadOptionsPreferenceFragment fragment = (LoadOptionsPreferenceFragment) getFragmentManager().findFragmentById(R.id.embeded_preference);
+        fragment.getEditTextPreference().setText("");
+        fragment.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                if(!optionManager.storeCurrentOptions((String) o)){
+                    // if this name already exist
+                    // (ask if overwrite?)
+                    optionManager.updateCurentOptionsStorage((String) o);
+                }
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.options_saved)+" \""+((String) o)+"\"", 0).show();
+                return true;
+            }});
+            fragment.showEditSaveOptionsName();
     }
 
 }
