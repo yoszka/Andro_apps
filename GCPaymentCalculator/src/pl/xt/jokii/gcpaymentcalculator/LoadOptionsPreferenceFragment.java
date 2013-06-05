@@ -1,15 +1,12 @@
 package pl.xt.jokii.gcpaymentcalculator;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.view.View;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,35 +20,50 @@ public class LoadOptionsPreferenceFragment extends PreferenceFragment {
     private static final String PREFERENCE_SCREEN = "pref_screen";
     private static final String LOAD_SAVED_OPTIONS = "load_saved_options";
     private static final String SAVE_TO_OPTIONS = "save_to_options_name";
-    OptionManager optionManager;
-    PreferenceScreen mPreferenceScreen;
-    ListPreference loadListPreference;
-    EditTextPreference saveOptionsEdittextPreference;
+    private static final String REMOVE_OPTIONS = "remove_options";
+    OptionManager             mOptionManager;
+    PreferenceScreen          mPreferenceScreen;
+    ListPreference            mLoadListPreference;
+    EditTextPreference        mSaveOptionsEdittextPreference;
+    MultiSelectListPreference mRemoveOptionsMultiSelectListPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.load_options);
+        addPreferencesFromResource(R.xml.manage_options_storage);
 
         mPreferenceScreen = (PreferenceScreen) findPreference(PREFERENCE_SCREEN);
         // Getting the ListPreference and EditTextPreference from the Preference Resource
-        loadListPreference            = (ListPreference )     getPreferenceManager().findPreference(LOAD_SAVED_OPTIONS);
-        saveOptionsEdittextPreference = (EditTextPreference ) getPreferenceManager().findPreference(SAVE_TO_OPTIONS);
+        mLoadListPreference = (ListPreference )     getPreferenceManager().findPreference(LOAD_SAVED_OPTIONS);
+        mSaveOptionsEdittextPreference = (EditTextPreference ) getPreferenceManager().findPreference(SAVE_TO_OPTIONS);
+        mRemoveOptionsMultiSelectListPreference = (MultiSelectListPreference ) getPreferenceManager().findPreference(REMOVE_OPTIONS);
 
-        optionManager = new OptionManager(getActivity());
+        mOptionManager = new OptionManager(getActivity());
     }
 
     public ListPreference getListPreference(){
-        return loadListPreference;
+        return mLoadListPreference;
     }
     public EditTextPreference getEditTextPreference(){
-        return saveOptionsEdittextPreference;
+        return mSaveOptionsEdittextPreference;
+    }
+    public MultiSelectListPreference getMultiSelectPreference(){
+        return mRemoveOptionsMultiSelectListPreference;
     }
 
     public void showLoadOptionsList(){
         // the position of your item inside the preference screen above
         int pos = findPreference(LOAD_SAVED_OPTIONS).getOrder();
+
+        // simulate a click / call it!!
+        mPreferenceScreen.onItemClick( null, null, pos, 0 );
+    }
+
+
+    public void showRemoveOptionsList(){
+        // the position of your item inside the preference screen above
+        int pos = findPreference(REMOVE_OPTIONS).getOrder();
 
         // simulate a click / call it!!
         mPreferenceScreen.onItemClick( null, null, pos, 0 );
@@ -68,14 +80,15 @@ public class LoadOptionsPreferenceFragment extends PreferenceFragment {
 
     public void setOnPreferenceChangeListener(Preference.OnPreferenceChangeListener listener){
 //        // Getting the ListPreference from the Preference Resource
-//        ListPreference loadListPreference = (ListPreference ) getPreferenceManager().findPreference("lp_android_choice");
+//        ListPreference mLoadListPreference = (ListPreference ) getPreferenceManager().findPreference("lp_android_choice");
         /** Setting Preference change listener for the ListPreference */
-        loadListPreference.setOnPreferenceChangeListener(listener);
-        saveOptionsEdittextPreference.setOnPreferenceChangeListener(listener);
+        mLoadListPreference.setOnPreferenceChangeListener(listener);
+        mSaveOptionsEdittextPreference.setOnPreferenceChangeListener(listener);
+        mRemoveOptionsMultiSelectListPreference.setOnPreferenceChangeListener(listener);
     }
 
     public boolean loadStoredOptions(){
-        HashMap<String, ArrayList<OptionStore> > options = optionManager.loadOptions();
+        HashMap<String, ArrayList<OptionStore> > options = mOptionManager.loadOptions();
         if(options.size() == 0){
             return false;   // no options loaded
         }
@@ -88,8 +101,15 @@ public class LoadOptionsPreferenceFragment extends PreferenceFragment {
             optionNames[index++] = (String)currentOption.getKey();
         }
 
-        loadListPreference.setEntries(optionNames);
-        loadListPreference.setEntryValues(optionNames);
+        // Set entries and values for load options list
+        mLoadListPreference.setEntries(optionNames);
+        mLoadListPreference.setEntryValues(optionNames);
+
+        // Set entries and values also for remove options list
+        mRemoveOptionsMultiSelectListPreference.setEntries(optionNames);
+        mRemoveOptionsMultiSelectListPreference.setEntryValues(optionNames);
+
+
         return true;
     }
 

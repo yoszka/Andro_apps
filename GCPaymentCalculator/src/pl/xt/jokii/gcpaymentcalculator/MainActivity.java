@@ -22,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends Activity {
 
@@ -321,16 +323,19 @@ public class MainActivity extends Activity {
 
     private void showRemoveOptionsDialog(){
         final LoadOptionsPreferenceFragment fragment = (LoadOptionsPreferenceFragment) getFragmentManager().findFragmentById(R.id.embeded_preference);
-        fragment.getListPreference().setDialogTitle(R.string.remove_options);
         fragment.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
-                    optionManager.removeFromOptionsStorage((String) o);
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.removed)+" \""+((String) o)+"\"", 0).show();
-                    return true;
-            }});
+                Set<String> values = (Set<String>) o;
+                for(String value : values){
+                    optionManager.removeFromOptionsStorage(value);
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.removed)+" \""+value+"\"", 0).show();
+                }
+            return true;
+        }});
         if(fragment.loadStoredOptions()){
-            fragment.showLoadOptionsList();
+            fragment.getMultiSelectPreference().setValues(new HashSet<String>());                   // Unselect all options by pass empty set of options to select
+            fragment.showRemoveOptionsList();
         }else{
             Toast.makeText(getApplicationContext(), R.string.no_options_found, 0).show();
         }

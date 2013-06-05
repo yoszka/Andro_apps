@@ -25,7 +25,7 @@
     <string name="removed">REMOVED</string>
     <string name="loaded">LOADED</string>
 
-    <string-array name="array_lp_entries">
+    <!--string-array name="array_lp_entries">
         <item>Jelly Bean</item>
         <item>Ice Cream Sandwich</item>
         <item>Honey Comb</item>
@@ -39,6 +39,8 @@
         <item>Honey Comb</item>
         <item>Ginger Bread</item>
         <item>Froyo</item>
-    </string-array>
+    </string-array-->
+
+    <string-array name="empty_array"/>
 
 </resources>
