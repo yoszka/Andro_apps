@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        android:key="pref_screen">
+    <ListPreference
+            android:key="load_saved_options"
+            android:entries="@array/empty_array"
+            android:entryValues="@array/empty_array"
+            android:title="@string/load_options"
+            />
+
+    <EditTextPreference
+        android:key="save_to_options_name"
+        android:title="@string/save_options"
+        android:persistent="false"/>
+
+    <MultiSelectListPreference
+            android:key="remove_options"
+            android:entries="@array/empty_array"
+            android:entryValues="@array/empty_array"
+            android:title="@string/remove_options"/>
+</PreferenceScreen>

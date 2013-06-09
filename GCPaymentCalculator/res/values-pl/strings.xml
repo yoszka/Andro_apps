@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="action_settings">Ustawienia</string>
+    <string name="gross">Brutto</string>
+    <string name="coupons">Bony</string>
+    <string name="gross_hint">brutto na umowie</string>
+    <string name="income">"PRZYCHÓD"</string>
+    <string name="outcome">"ROZCHÓD"</string>
+    <string name="net">"NA RĘKĘ (Z BONAMI)"</string>
+    <string name="add">Dodaj</string>
+    <string name="edit">Edycja</string>
+    <string name="option_name">Nazwa opcji</string>
+    <string name="pay_company">Płaci firma</string>
+    <string name="pay_employee">Płaci pracownik</string>
+    <string name="remove_option">Usuń opcję</string>
+    <string name="load_options">Wczytaj opcje</string>
+    <string name="save_options">Zapisz opcje</string>
+    <string name="remove_options">Unuń opcje</string>
+    <string name="no_options_found">Nie znaleziono opcji</string>
+    <string name="options_saved">ZAPISANO</string>
+    <string name="default_option_name">Nazwa opcji</string>
+    <string name="removed">USUNIĘTO</string>
+    <string name="loaded">WCZYTANO</string>
+
+</resources>
