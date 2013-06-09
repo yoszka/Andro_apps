@@ -1,0 +1,11 @@
+Test application.
+
+To build JUnit Test package (in folder ~/android/system run command):
+make TestContentProvider.test showcommands
+
+To install Test package (run command):
+adb install -r out/target/product/generic/data/app/TestContentProvider.test.apk
+
+To Start Test cases (run command):
+adb shell am instrument -w com.test.testcontentprovider/android.test.InstrumentationTestRunner
+
