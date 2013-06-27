@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:key="edit_text"
+        android:persistent="false"
+        android:title="Edit text (spinner)" />
+
+    <CheckBoxPreference
+        android:key="wlacznik"
+        android:persistent="false"
+        android:summaryOff="OFF"
+        android:summaryOn="ON"
+        android:title="Click me (spinner)" />
+
+    <CheckBoxPreference
+        android:key="wlacznik_custom"
+        android:persistent="false"
+        android:summaryOff="OFF"
+        android:summaryOn="ON"
+        android:title="Click me (custom)" />
+
+
+</PreferenceScreen>
