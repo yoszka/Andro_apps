@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
+    <CheckBoxPreference android:title="Some dummy preference"/>
+    
     <!-- Convinient method, but with limited inner layout access.
          Using this method, in order to listen for onClick event from buttons
          need to add additional attribute android:onClick="onClickMethod" to inner layouts Button views -->

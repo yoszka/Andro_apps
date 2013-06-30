@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:gravity="center_horizontal"
-    android:orientation="horizontal" >
+    android:orientation="horizontal" 
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <!-- Using simple/convinient method to listen for onClick event 
          need to add additional attribute android:onClick="onClickMethod" -->
@@ -14,13 +16,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
-        android:text="Button1" />
+        android:text="Button 1" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="Button2" />
+        android:text="Button 2" />
 
 </LinearLayout>
