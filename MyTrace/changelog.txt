@@ -1,0 +1,4 @@
+1.0.0 - base functionality to display current location point
+2.1.0 - added drawing: accuracy circle, accuracy value, signal type icon, and time of measurement
+2.2.0 - added drawing location history (blue line), added checking if Internet connection is available
+2.2.1 - fixed history line width (now more thick)
