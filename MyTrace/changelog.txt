@@ -2,3 +2,4 @@
 2.1.0 - added drawing: accuracy circle, accuracy value, signal type icon, and time of measurement
 2.2.0 - added drawing location history (blue line), added checking if Internet connection is available
 2.2.1 - fixed history line width (now more thick)
+2.3.0 - Add wake lock to prevent go application to sleep when screen is off, add ongoing notification icon when application works in background.

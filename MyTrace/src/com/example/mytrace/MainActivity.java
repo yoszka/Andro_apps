@@ -5,7 +5,12 @@ import java.util.Stack;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,6 +22,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -41,6 +48,7 @@ public class MainActivity extends MapActivity  {
 	MapView mapView;
 	private Drawable mPositionIcon; 
 	private Drawable mSignalTypeIndicator; 
+	private static boolean trackingEnabled = false;
 	
 	private Point punkt = new Point();
 	private Point punkt1 = new Point();
@@ -73,10 +81,41 @@ public class MainActivity extends MapActivity  {
 		
 	}
 	
+	void showNotificationIcon(){
+		int icon = R.drawable.ic_launcher;
+		NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+		Notification notification = new Notification(icon, "Tracking ON", System.currentTimeMillis());
+//		
+		String title = getApplicationContext().getString(R.string.app_name);
+//		
+		Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+//		
+//		
+//		
+//		// set intent so it does not start a new activity
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		PendingIntent intent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		notification.setLatestEventInfo(getApplicationContext(), title, "Tracking ON", intent);
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+//		
+//		// Play default notification sound
+//		notification.defaults |= Notification.DEFAULT_SOUND;
+//		
+//		// Vibrate if vibrate is enabled
+//		notification.defaults |= Notification.DEFAULT_VIBRATE;
+		notificationManager.notify(R.id.notification, notification);
+	}
+	
+	void hideNotificationIcon(){
+		NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(R.id.notification);
+	}
+	
 	
 	@Override
 	protected void onResume() {
 	    super.onResume();
+	    log("onResume");
 	    if(!Connectivity.isOnline(this)){
 	    	new AlertDialog.Builder(this)
 	    	.setTitle("Error")
@@ -88,14 +127,32 @@ public class MainActivity extends MapActivity  {
 	    	})
 	    	.show();
 	    }else{
-	    	startLocationTracking();
+	    	if(!trackingEnabled){
+	    		startLocationTracking();
+	    	}
 	    }
 	}
 	
 	@Override
-	protected void onStop() {
-		super.onStop();
-		stopLocationTracking();
+	protected void onDestroy() {
+	    super.onDestroy();
+	    log("onDestroy");
+	    stopLocationTracking();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(trackingEnabled){
+			stopLocationTracking();
+		}
+		return true;
 	}
 	
 	void prepareMap(){
@@ -216,15 +273,8 @@ public class MainActivity extends MapActivity  {
 		return ratio;
 	}	
 	
-	public void onClickTest1(View v){
-		startLocationTracking();
-	}
-	
-	public void onClickTest2(View v){
-		mLocationClient.disconnect();
-	}
-
 	int startLocationTracking() {
+		WakeLocker.acquire(getApplicationContext());
 		int result = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 	    if (result == ConnectionResult.SUCCESS) {
 	    	log("ConnectionResult.SUCCESS");
@@ -239,6 +289,9 @@ public class MainActivity extends MapActivity  {
 	void stopLocationTracking(){
 		if(mLocationClient != null){
 			mLocationClient.disconnect();
+			WakeLocker.release();
+			trackingEnabled = false;
+			hideNotificationIcon();
 		}
 	}
 	
@@ -252,6 +305,8 @@ public class MainActivity extends MapActivity  {
 	    @Override
 	    public void onConnected(Bundle arg0) {
 	    	log("CONNECTED");
+	    	trackingEnabled = true;
+	    	showNotificationIcon();
 	        LocationRequest locationRequest = LocationRequest.create();
 //	        locationRequest.setFastestInterval(0);
 	        locationRequest.setInterval(10*1000) // 10s
