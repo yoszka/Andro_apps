@@ -1,10 +1,12 @@
 package pl.xt.jokii.inventory;
 
 import pl.xt.jokii.adapter.InventoryAdapter;
+import pl.xt.jokii.db.DbUtils;
 import pl.xt.jokii.db.InventoryEntry;
 import pl.xt.jokii.db.InventoryResultsSet;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,43 +35,49 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		InventoryEntry entry = new InventoryEntry();
-		entry.setCategory("Przyprawy");
-		entry.setName("Pieprz");
-		entry.setAmount(3);
-		resultSet.addEntry(entry);
+//		InventoryEntry entry = new InventoryEntry();
+//		entry.setCategory("Przyprawy");
+//		entry.setName("Przyprawa do kurczaka");
+//		entry.setAmount(0);
+//		resultSet.addEntry(entry);
+////		DbUtils.insertEntryDB(getApplicationContext(), entry);
+//		
+//		entry = new InventoryEntry();
+//		entry.setCategory("Œrodki czystoœci");
+//		entry.setName("Myd³o");
+//		entry.setAmount(5);
+//		resultSet.addEntry(entry);
+////		DbUtils.insertEntryDB(getApplicationContext(), entry);
+//		
+//		entry = new InventoryEntry();
+//		entry.setCategory("Przyprawy");
+//		entry.setName("Majeranek");
+//		entry.setAmount(2);
+//		resultSet.addEntry(entry);
+////		DbUtils.insertEntryDB(getApplicationContext(), entry);
+//		
+//		entry = new InventoryEntry();
+//		entry.setCategory("Przyprawy");
+//		entry.setName("Sól");
+//		entry.setAmount(1);
+//		resultSet.addEntry(entry);
+////		DbUtils.insertEntryDB(getApplicationContext(), entry);
+//		
+//		entry = new InventoryEntry();
+//		entry.setCategory("Jedzenie");
+//		entry.setName("Fasolka");
+//		entry.setAmount(1);
+//		resultSet.addEntry(entry);
+////		DbUtils.insertEntryDB(getApplicationContext(), entry);
+//		
+//		entry = new InventoryEntry();
+//		entry.setCategory("Œrodki czystoœci");
+//		entry.setName("P³yn do naczyñ");
+//		entry.setAmount(0);
+//		resultSet.addEntry(entry);
+////		DbUtils.insertEntryDB(getApplicationContext(), entry);
 		
-		entry = new InventoryEntry();
-		entry.setCategory("Przyprawy");
-		entry.setName("Majeranek");
-		entry.setAmount(2);
-		resultSet.addEntry(entry);
-		
-		entry = new InventoryEntry();
-		entry.setCategory("Przyprawy");
-		entry.setName("Sól");
-		entry.setAmount(1);
-		resultSet.addEntry(entry);
-		
-		entry = new InventoryEntry();
-		entry.setCategory("Œrodki czystoœci");
-		entry.setName("Myd³o");
-		entry.setAmount(5);
-		resultSet.addEntry(entry);
-		
-		entry = new InventoryEntry();
-		entry.setCategory("Œrodki czystoœci");
-		entry.setName("P³yn do naczyñ");
-		entry.setAmount(0);
-		resultSet.addEntry(entry);
-		
-		entry = new InventoryEntry();
-		entry.setCategory("Jedzenie");
-		entry.setName("Fasolka");
-		entry.setAmount(1);
-		resultSet.addEntry(entry);
-		
-		
+		resultSet = DbUtils.retrieveResultSet(getApplicationContext());
 		
      	mInventoryAdapter = new InventoryAdapter(resultSet, getLayoutInflater());
      	mInventoryAdapter.setResource(getResources());
@@ -80,7 +88,7 @@ public class MainActivity extends Activity {
 			@Override
             public boolean onItemLongClick(AdapterView<?> arg0, View v,
                     int position, long arg3) {
-				Toast.makeText(getApplicationContext(), "Edit item " + position, 0).show();
+				Toast.makeText(getApplicationContext(), "Edit item " + position + ", id: " + (Long)v.getTag(), 0).show();
 	            return true;
             }
 		});
@@ -94,7 +102,12 @@ public class MainActivity extends Activity {
 //			Toast.makeText(getApplicationContext(), "Plus " + position, 0).show();
 			int amount = mInventoryAdapter.getItem(position).getAmount();
 			amount++;
+//			InventoryEntry entry = mInventoryAdapter.getItem(position);
+//			entry.setAmount(amount);
+//			DbUtils.updateEntryDB(getApplicationContext(), entry);
+			
 			mInventoryAdapter.getItem(position).setAmount(amount);
+			DbUtils.updateEntryDB(getApplicationContext(), mInventoryAdapter.getItem(position));
 			mListView.invalidateViews();
 		}
 	};

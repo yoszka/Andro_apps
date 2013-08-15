@@ -78,7 +78,7 @@ public class InventoryProvider extends ContentProvider{
 				+InventoryProviderMetaData.InventoryTableMetaData._ID+" INTEGER PRIMARY KEY, "
 				+InventoryTableMetaData.INVENTORY_NAME		+" VARCHAR, "
 				+InventoryTableMetaData.INVENTORY_CATEGORY	+" VARCHAR, "
-				+InventoryTableMetaData.INVENTORY_AMOUNT	+" INTEGER, "				
+				+InventoryTableMetaData.INVENTORY_AMOUNT	+" INTEGER "				
 				+");");
 			
 

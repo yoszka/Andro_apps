@@ -7,12 +7,11 @@ import pl.xt.jokii.db.InventoryResultsSet;
 import pl.xt.jokii.inventory.R;
 
 import android.content.res.Resources;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,15 +19,17 @@ import android.widget.TextView;
 
 public class InventoryAdapter extends BaseAdapter {
 	final LayoutInflater inflater;
-	final List<InventoryEntry> entries;
+	private List<InventoryEntry> mEntries;
 	private Resources appResource = null;
 	private OnClickListener mOnButtonPlusClickListener;
 	private OnClickListener mOnButtonMinusClickListener;
-	private OnLongClickListener mOnItemLongClickListener;
+//	private InventoryResultsSet mResultSet;
+//	List<InventoryEntry> mEntriesWithCategories;
+//	private OnLongClickListener mOnItemLongClickListener;
 	
 	public InventoryAdapter(InventoryResultsSet resultSet, LayoutInflater inflater)
 	{
-		this.entries  = resultSet.getEntries();
+		mEntries =  resultSet.getEntriesWithCategories();
 		this.inflater = inflater;		
 	}
 	
@@ -39,9 +40,9 @@ public class InventoryAdapter extends BaseAdapter {
 		mOnButtonMinusClickListener = listener;
 	}
 	
-	public void setOnItemLongClickListener(OnLongClickListener listener){
-		mOnItemLongClickListener = listener;
-	}
+//	public void setOnItemLongClickListener(OnLongClickListener listener){
+//		mOnItemLongClickListener = listener;
+//	}
 	
 	public void setResource(Resources res)
 	{
@@ -49,11 +50,11 @@ public class InventoryAdapter extends BaseAdapter {
 	}
 
 	public int getCount() {
-		return this.entries.size();
+		return mEntries.size();
 	}
 
 	public InventoryEntry getItem(int position) {
-		return this.entries.get(position);
+		return mEntries.get(position);
 	}
 
 	public long getItemId(int position) {
@@ -62,7 +63,7 @@ public class InventoryAdapter extends BaseAdapter {
 	}
 	
 
-	public View getView(int position, View wierszView, ViewGroup parent) {
+	public View getView(int position, View rowView, ViewGroup parent) {
 //		String previousCategory = null;
 //		String currentCategory  = null;
 //		
@@ -89,36 +90,38 @@ public class InventoryAdapter extends BaseAdapter {
 		
 		
 		if(getItemViewType(position) == InventoryEntry.TYPE_ENTRY){
-			if (wierszView == null) {
-				wierszView = inflater.inflate(R.layout.list_item, null);
+			if (rowView == null) {
+				rowView = inflater.inflate(R.layout.list_item, null);
 			}
 			
 			//wierszView.setPadding(10,10, 10,10);
 			
 			// NAME
-			TextView textViewName = (TextView)wierszView.findViewById(R.id.textViewName);
+			TextView textViewName = (TextView)rowView.findViewById(R.id.textViewName);
 			textViewName.setText(getItem(position).getName());
 			// AMOUNT
-			EditText editTextAmount = (EditText) wierszView.findViewById(R.id.editTextAmount);
+			EditText editTextAmount = (EditText) rowView.findViewById(R.id.editTextAmount);
 			editTextAmount.setText(String.valueOf(getItem(position).getAmount()));
 			// BUTTONS
-			Button buttonPlus  = (Button) wierszView.findViewById(R.id.buttonPlus);
+			Button buttonPlus  = (Button) rowView.findViewById(R.id.buttonPlus);
 			buttonPlus.setTag((Integer)position);
 			buttonPlus.setOnClickListener(mOnButtonPlusClickListener);
-			Button buttonMinus = (Button) wierszView.findViewById(R.id.buttonMinus);
+			Button buttonMinus = (Button) rowView.findViewById(R.id.buttonMinus);
 			buttonMinus.setTag((Integer)position);
 			buttonMinus.setOnClickListener(mOnButtonMinusClickListener);
+			
+			rowView.setTag((Long)getItem(position).getId());
 		}else{
-			if (wierszView == null) {
-				wierszView = inflater.inflate(R.layout.list_item_category, null);
+			if (rowView == null) {
+				rowView = inflater.inflate(R.layout.list_item_category, null);
 			}
 			// CATEGORY
-			TextView textViewCategory = ((TextView)wierszView.findViewById(R.id.textViewCategory));
+			TextView textViewCategory = ((TextView)rowView.findViewById(R.id.textViewCategory));
 			textViewCategory.setText(getItem(position).getCategory());
-			wierszView.setClickable(false);
+			rowView.setClickable(false);
 		}
 		
-		return wierszView;
+		return rowView;
 	}
 	
 	@Override
