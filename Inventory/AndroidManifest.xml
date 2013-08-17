@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.xt.jokii.inventory"
-    android:versionCode="010"
-    android:versionName="0.1.0" >
+    android:versionCode="020"
+    android:versionName="0.2.0" >
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -24,7 +24,13 @@
         </activity>
         
         <provider android:name="pl.xt.jokii.db.InventoryProvider" 
-                  android:authorities="pl.xt.jokii.db.InventoryProvider"/>
+                  android:authorities="pl.xt.jokii.db.InventoryProvider"
+                  android:exported="false"/>
+        
+        <activity android:name="AddEditActivity"/>
+        
+        <activity android:name="NewCategoryDialog" 
+                  android:theme="@android:style/Theme.Dialog" />
 
     </application>
 

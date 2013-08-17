@@ -22,7 +22,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/add" />
+            android:text="@string/add" 
+            android:onClick="onClickAdd"/>
 
         <Button
             android:id="@+id/button3"

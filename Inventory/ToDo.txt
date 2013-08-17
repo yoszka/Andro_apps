@@ -1,0 +1,4 @@
+1. Add method getCategories in order to provide picker in ADD option
+2. Add ADD functionality (Activity)
+3. Add EDIT on long press functionality
+4. Add DELETE functionality (somewhere)

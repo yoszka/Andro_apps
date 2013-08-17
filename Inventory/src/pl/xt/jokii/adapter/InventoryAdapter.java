@@ -20,7 +20,7 @@ import android.widget.TextView;
 public class InventoryAdapter extends BaseAdapter {
 	final LayoutInflater inflater;
 	private List<InventoryEntry> mEntries;
-	private Resources appResource = null;
+//	private Resources appResource = null;
 	private OnClickListener mOnButtonPlusClickListener;
 	private OnClickListener mOnButtonMinusClickListener;
 //	private InventoryResultsSet mResultSet;
@@ -30,7 +30,7 @@ public class InventoryAdapter extends BaseAdapter {
 	public InventoryAdapter(InventoryResultsSet resultSet, LayoutInflater inflater)
 	{
 		mEntries =  resultSet.getEntriesWithCategories();
-		this.inflater = inflater;		
+		this.inflater = inflater;
 	}
 	
 	public void setOnButtonPlusClickListener(OnClickListener listener){
@@ -44,10 +44,10 @@ public class InventoryAdapter extends BaseAdapter {
 //		mOnItemLongClickListener = listener;
 //	}
 	
-	public void setResource(Resources res)
-	{
-		this.appResource = res;
-	}
+//	public void setResource(Resources res)
+//	{
+//		this.appResource = res;
+//	}
 
 	public int getCount() {
 		return mEntries.size();
@@ -83,10 +83,10 @@ public class InventoryAdapter extends BaseAdapter {
 		
 		
 		
-		if(this.appResource == null)
-		{
-			throw new NullPointerException("Resource was used but never set before");
-		}
+//		if(this.appResource == null)
+//		{
+//			throw new NullPointerException("Resource was used but never set before");
+//		}
 		
 		
 		if(getItemViewType(position) == InventoryEntry.TYPE_ENTRY){

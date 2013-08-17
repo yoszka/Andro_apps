@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="add_entry_req_id" type="id"/>
+    <item name="add_new_category_req_id" type="id"/>
+</resources>

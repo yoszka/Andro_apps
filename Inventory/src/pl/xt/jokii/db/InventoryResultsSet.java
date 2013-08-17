@@ -38,47 +38,48 @@ public class InventoryResultsSet {
 		this.mEntries = entries;
 	}	
 	
-	/**
-	 * Get Headers list
-	 * @return ArrayList<String>
-	 */
-	public ArrayList<String> getHeadersList()
-	{
-		ArrayList<String>  headersList = new ArrayList<String>();
-		
-		for(int i = 0; i < mEntries.size(); i++)
-		{
-			headersList.add(mEntries.get(i).getName());
-		}	
-		
-		return headersList;
-	}
+//	/**
+//	 * Get Categoriws list
+//	 * @return ArrayList<String>
+//	 */
+//	public ArrayList<String> getCategoriesList()
+//	{
+//		ArrayList<String>  categoriesList = new ArrayList<String>();
+//		
+//		for(int i = 0; i < mEntries.size(); i++)
+//		{
+//			categoriesList.add(mEntries.get(i).getCategory());
+//		}	
+//		
+//		return categoriesList;
+//	}
 	
 	/**
 	 * Update entry with given id
-	 * @param entryId		 - key id to find entry
+	 * @param entryDbId		 - key id from data base to find entry
 	 * @param inventoryEntry - entry with new parameters
 	 */
-	public void updateEntry(long entryId, InventoryEntry inventoryEntry)
+	public void updateEntry(long entryDbId, InventoryEntry inventoryEntry)
 	{
-		InventoryEntry e = getEntryById(entryId);
+		InventoryEntry e = getEntryByDbId(entryDbId);
 		
-		e.setName	(inventoryEntry.getName());
-		e.setAmount	(inventoryEntry.getAmount());
+		e.setName	 (inventoryEntry.getName());
+		e.setAmount	 (inventoryEntry.getAmount());
+		e.setCategory(inventoryEntry.getCategory());
 	}
 	
 	/**
 	 * Get entry by data base id
-	 * @param id			  - data base id
+	 * @param dbId			  - data base id
 	 * @return InventoryEntry - entry with all data
 	 */
-	public InventoryEntry getEntryById(long id)
+	public InventoryEntry getEntryByDbId(long dbId)
 	{
 		InventoryEntry inventoryEntry = null;
 		
 		for(InventoryEntry e: mEntries)
 		{
-			if(e.getId() == id)
+			if(e.getId() == dbId)
 			{
 				inventoryEntry = e;
 				break;
@@ -128,31 +129,31 @@ public class InventoryResultsSet {
 		mEntries.add(e);
 	}
 
-	/**
-	 * Add entry at the begining of the list
-	 * @param e new entry
-	 */
-	private void addBegin(InventoryEntry e)
-	{
-		ArrayList<InventoryEntry> entriesTmp = new ArrayList<InventoryEntry>();
-    	
-		entriesTmp.add(e);
-		entriesTmp.addAll(mEntries);
-		mEntries.clear();
-		mEntries.addAll(entriesTmp);		
-	}
+//	/**
+//	 * Add entry at the begining of the list
+//	 * @param e new entry
+//	 */
+//	private void addBegin(InventoryEntry e)
+//	{
+//		ArrayList<InventoryEntry> entriesTmp = new ArrayList<InventoryEntry>();
+//    	
+//		entriesTmp.add(e);
+//		entriesTmp.addAll(mEntries);
+//		mEntries.clear();
+//		mEntries.addAll(entriesTmp);		
+//	}
 	
 	/**
 	 * Delete entry with given id
-	 * @param entryId entry to delete
+	 * @param entryDbId entry data base id to delete
 	 */
-	public void deleteEntryId(long entryId)
+	public void deleteEntryDbId(long entryDbId)
 	{
 		int index = 0;
 		
 		for(InventoryEntry e: mEntries)
 		{
-			if(e.getId() == entryId)
+			if(e.getId() == entryDbId)
 			{
 				mEntries.remove(index);
 				break;
@@ -161,135 +162,135 @@ public class InventoryResultsSet {
 		}
 	}
 	
-	/**
-	 * Create standard array from list
-	 */
-	private InventoryEntry[] createArrayFromList(ArrayList<InventoryEntry> inputList)
-	{
-		InventoryEntry[] entriesArr = new InventoryEntry[mEntries.size()];
-		
-		for(int i = 0; i < inputList.size(); i++)
-		{
-			entriesArr[i] = inputList.get(i);
-		}
-		
-		return entriesArr;
-	}
+//	/**
+//	 * Create standard array from list
+//	 */
+//	private InventoryEntry[] createArrayFromList(ArrayList<InventoryEntry> inputList)
+//	{
+//		InventoryEntry[] entriesArr = new InventoryEntry[mEntries.size()];
+//		
+//		for(int i = 0; i < inputList.size(); i++)
+//		{
+//			entriesArr[i] = inputList.get(i);
+//		}
+//		
+//		return entriesArr;
+//	}
 	
-	/**
-	 * Ceate list from array
-	 */
-	private ArrayList<InventoryEntry> createListFromArray(InventoryEntry[] inputArray)
-	{
-		ArrayList<InventoryEntry> entriesList = new ArrayList<InventoryEntry>();
-		
-		for(int i = 0; i < inputArray.length; i++)
-		{
-			entriesList.add(inputArray[i]);
-		}
-		
-		return entriesList;
-	}
+//	/**
+//	 * Ceate list from array
+//	 */
+//	private ArrayList<InventoryEntry> createListFromArray(InventoryEntry[] inputArray)
+//	{
+//		ArrayList<InventoryEntry> entriesList = new ArrayList<InventoryEntry>();
+//		
+//		for(int i = 0; i < inputArray.length; i++)
+//		{
+//			entriesList.add(inputArray[i]);
+//		}
+//		
+//		return entriesList;
+//	}
 	
-	/**
-	 * Sorting list by id ASC
-	 */
-	public void sortByIdAsc()
-	{
-		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
-		InventoryEntry   entryTmp;
-		
-		for(int j = 0; j < (mEntries.size()-1); j++)
-		{
-			for(int i = 0; i < (mEntries.size()-1); i++)
-			{
-				if(entriesArr[i].getId() > entriesArr[i+1].getId())
-				{
-					entryTmp = entriesArr[i];
-					
-					entriesArr[i]   = entriesArr[i+1];		
-					entriesArr[i+1] = entryTmp;
-				}
-			}
-		}
-		
-		mEntries = createListFromArray(entriesArr);
-	}
+//	/**
+//	 * Sorting list by id ASC
+//	 */
+//	public void sortByIdAsc()
+//	{
+//		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
+//		InventoryEntry   entryTmp;
+//		
+//		for(int j = 0; j < (mEntries.size()-1); j++)
+//		{
+//			for(int i = 0; i < (mEntries.size()-1); i++)
+//			{
+//				if(entriesArr[i].getId() > entriesArr[i+1].getId())
+//				{
+//					entryTmp = entriesArr[i];
+//					
+//					entriesArr[i]   = entriesArr[i+1];		
+//					entriesArr[i+1] = entryTmp;
+//				}
+//			}
+//		}
+//		
+//		mEntries = createListFromArray(entriesArr);
+//	}
 	
-	/**
-	 * Sorting list by id DESC
-	 */
-	public void sortByIdDesc()
-	{
-		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
-		InventoryEntry   entryTmp;
-		
-		for(int j = 0; j < (mEntries.size()-1); j++)
-		{
-			for(int i = 0; i < (mEntries.size()-1); i++)
-			{
-				if(entriesArr[i].getId() < entriesArr[i+1].getId())
-				{
-					entryTmp = entriesArr[i];
-					
-					entriesArr[i]   = entriesArr[i+1];		
-					entriesArr[i+1] = entryTmp;
-				}
-			}
-		}
-		
-		mEntries = createListFromArray(entriesArr);
-	}
+//	/**
+//	 * Sorting list by id DESC
+//	 */
+//	public void sortByIdDesc()
+//	{
+//		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
+//		InventoryEntry   entryTmp;
+//		
+//		for(int j = 0; j < (mEntries.size()-1); j++)
+//		{
+//			for(int i = 0; i < (mEntries.size()-1); i++)
+//			{
+//				if(entriesArr[i].getId() < entriesArr[i+1].getId())
+//				{
+//					entryTmp = entriesArr[i];
+//					
+//					entriesArr[i]   = entriesArr[i+1];		
+//					entriesArr[i+1] = entryTmp;
+//				}
+//			}
+//		}
+//		
+//		mEntries = createListFromArray(entriesArr);
+//	}
 	
-	/**
-	 * Sorting list by id ASC
-	 */
-	public void sortByMileageAsc()
-	{
-		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
-		InventoryEntry   entryTmp;
-		
-		for(int j = 0; j < (mEntries.size()-1); j++)
-		{
-			for(int i = 0; i < (mEntries.size()-1); i++)
-			{
-				if(entriesArr[i].getAmount() > entriesArr[i+1].getAmount())
-				{
-					entryTmp = entriesArr[i];
-					
-					entriesArr[i]   = entriesArr[i+1];		
-					entriesArr[i+1] = entryTmp;
-				}
-			}
-		}
-		
-		mEntries = createListFromArray(entriesArr);
-	}
+//	/**
+//	 * Sorting list by id ASC
+//	 */
+//	public void sortByMileageAsc()
+//	{
+//		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
+//		InventoryEntry   entryTmp;
+//		
+//		for(int j = 0; j < (mEntries.size()-1); j++)
+//		{
+//			for(int i = 0; i < (mEntries.size()-1); i++)
+//			{
+//				if(entriesArr[i].getAmount() > entriesArr[i+1].getAmount())
+//				{
+//					entryTmp = entriesArr[i];
+//					
+//					entriesArr[i]   = entriesArr[i+1];		
+//					entriesArr[i+1] = entryTmp;
+//				}
+//			}
+//		}
+//		
+//		mEntries = createListFromArray(entriesArr);
+//	}
 	
-	/**
-	 * Sorting list by id ASC
-	 */
-	public void sortByMileageDesc()
-	{
-		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
-		InventoryEntry   entryTmp;
-		
-		for(int j = 0; j < (mEntries.size()-1); j++)
-		{
-			for(int i = 0; i < (mEntries.size()-1); i++)
-			{
-				if(entriesArr[i].getAmount() < entriesArr[i+1].getAmount())
-				{
-					entryTmp = entriesArr[i];
-					
-					entriesArr[i]   = entriesArr[i+1];		
-					entriesArr[i+1] = entryTmp;
-				}
-			}
-		}
-		
-		mEntries = createListFromArray(entriesArr);
-	}
+//	/**
+//	 * Sorting list by id ASC
+//	 */
+//	public void sortByMileageDesc()
+//	{
+//		InventoryEntry[] entriesArr = createArrayFromList(mEntries);
+//		InventoryEntry   entryTmp;
+//		
+//		for(int j = 0; j < (mEntries.size()-1); j++)
+//		{
+//			for(int i = 0; i < (mEntries.size()-1); i++)
+//			{
+//				if(entriesArr[i].getAmount() < entriesArr[i+1].getAmount())
+//				{
+//					entryTmp = entriesArr[i];
+//					
+//					entriesArr[i]   = entriesArr[i+1];		
+//					entriesArr[i+1] = entryTmp;
+//				}
+//			}
+//		}
+//		
+//		mEntries = createListFromArray(entriesArr);
+//	}
 
 	public ArrayList<String> getCategories() {
 		return mCategories;
