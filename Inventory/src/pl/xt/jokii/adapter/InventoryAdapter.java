@@ -20,17 +20,21 @@ import android.widget.TextView;
 public class InventoryAdapter extends BaseAdapter {
 	final LayoutInflater inflater;
 	private List<InventoryEntry> mEntries;
-//	private Resources appResource = null;
 	private OnClickListener mOnButtonPlusClickListener;
 	private OnClickListener mOnButtonMinusClickListener;
-//	private InventoryResultsSet mResultSet;
-//	List<InventoryEntry> mEntriesWithCategories;
-//	private OnLongClickListener mOnItemLongClickListener;
+	private OnClickListener mOnButtonDismissOkClickListener;
+	private OnClickListener mOnButtonDismissCancelClickListener;
+	private Resources mAppResources;
 	
-	public InventoryAdapter(InventoryResultsSet resultSet, LayoutInflater inflater)
+	public InventoryAdapter(Resources resources, InventoryResultsSet resultSet, LayoutInflater inflater)
 	{
 		mEntries =  resultSet.getEntriesWithCategories();
 		this.inflater = inflater;
+		mAppResources = resources;
+	}
+	
+	public void setResultSet(InventoryResultsSet resultSet){
+		mEntries =  resultSet.getEntriesWithCategories();
 	}
 	
 	public void setOnButtonPlusClickListener(OnClickListener listener){
@@ -40,15 +44,13 @@ public class InventoryAdapter extends BaseAdapter {
 		mOnButtonMinusClickListener = listener;
 	}
 	
-//	public void setOnItemLongClickListener(OnLongClickListener listener){
-//		mOnItemLongClickListener = listener;
-//	}
+	public void setOnButtonDismissOkClickListener(OnClickListener listener){
+		mOnButtonDismissOkClickListener = listener;
+	}
+	public void setOnButtonDismissCancelClickListener(OnClickListener listener){
+		mOnButtonDismissCancelClickListener = listener;
+	}
 	
-//	public void setResource(Resources res)
-//	{
-//		this.appResource = res;
-//	}
-
 	public int getCount() {
 		return mEntries.size();
 	}
@@ -59,46 +61,28 @@ public class InventoryAdapter extends BaseAdapter {
 
 	public long getItemId(int position) {
 		return getItem(position).getId();
-		//return this.entries.get(position).getId();
 	}
 	
 
 	public View getView(int position, View rowView, ViewGroup parent) {
-//		String previousCategory = null;
-//		String currentCategory  = null;
-//		
-//		if(position == 0){
-//			currentCategory = getItem(position).getCategory();
-//		}else{
-//			currentCategory = getItem(position).getCategory();
-//			previousCategory = getItem(position-1).getCategory();
-//
-//			if((previousCategory == null)
-//					||
-//					(currentCategory != null) && (previousCategory != null) && (currentCategory.equals(previousCategory))){
-//				currentCategory = null;
-//			}
-//		}
-		
-		
-		
-		
-//		if(this.appResource == null)
-//		{
-//			throw new NullPointerException("Resource was used but never set before");
-//		}
-		
 		
 		if(getItemViewType(position) == InventoryEntry.TYPE_ENTRY){
 			if (rowView == null) {
 				rowView = inflater.inflate(R.layout.list_item, null);
 			}
 			
-			//wierszView.setPadding(10,10, 10,10);
+			// Set default items visibility
+			rowView.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.GONE);
+			rowView.findViewById(R.id.list_item_content_layout).setVisibility(View.VISIBLE);
 			
 			// NAME
 			TextView textViewName = (TextView)rowView.findViewById(R.id.textViewName);
 			textViewName.setText(getItem(position).getName());
+			// dismissed name (same like NAME)
+			TextView textViewNameDismissed = (TextView)rowView.findViewById(R.id.textViewNameDismissed);
+//			textViewNameDismissed.setText("Delete: \"" + getItem(position).getName()+"\"?");
+			textViewNameDismissed.setText(
+					String.format(mAppResources.getString(R.string.delete_confirm), getItem(position).getName()));
 			// AMOUNT
 			EditText editTextAmount = (EditText) rowView.findViewById(R.id.editTextAmount);
 			editTextAmount.setText(String.valueOf(getItem(position).getAmount()));
@@ -106,9 +90,18 @@ public class InventoryAdapter extends BaseAdapter {
 			Button buttonPlus  = (Button) rowView.findViewById(R.id.buttonPlus);
 			buttonPlus.setTag((Integer)position);
 			buttonPlus.setOnClickListener(mOnButtonPlusClickListener);
+			
 			Button buttonMinus = (Button) rowView.findViewById(R.id.buttonMinus);
 			buttonMinus.setTag((Integer)position);
 			buttonMinus.setOnClickListener(mOnButtonMinusClickListener);
+			
+			Button buttonDismissOk = (Button) rowView.findViewById(R.id.buttonDismissOk);
+			buttonDismissOk.setTag((Integer)position);
+			buttonDismissOk.setOnClickListener(mOnButtonDismissOkClickListener);
+			
+			Button buttonDismissCancel = (Button) rowView.findViewById(R.id.buttonDismissCancel);
+			buttonDismissCancel.setTag((Integer)position);
+			buttonDismissCancel.setOnClickListener(mOnButtonDismissCancelClickListener);
 			
 			rowView.setTag((Long)getItem(position).getId());
 		}else{

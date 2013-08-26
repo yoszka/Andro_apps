@@ -29,6 +29,15 @@ public abstract class DbUtils {
 				args, null, null);			
 	}
 	
+	/**
+	 * Delete given entry id in data base
+	 * @param dbId				- id of entry in data base
+	 */
+	public static void deleteEntryDB(Context ctx, long dbId)
+	{	
+		ctx.getContentResolver().delete(Uri.withAppendedPath(InventoryProviderMetaData.InventoryTableMetaData.CONTENT_URI, String.valueOf(dbId)), null, null);
+	}
+	
 	
 	
 	

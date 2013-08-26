@@ -1,4 +1,5 @@
-1. Add method getCategories in order to provide picker in ADD option
-2. Add ADD functionality (Activity)
-3. Add EDIT on long press functionality
-4. Add DELETE functionality (somewhere)
+1. <DONE> Add method getCategories in order to provide picker in ADD option
+2. <DONE> Add ADD functionality (Activity)
+3. <DONE> Add EDIT on long press functionality
+4. <DONE> Add DELETE functionality on slide to dissmiss
+5. Figure out how to improve long press vs. slide to dismiss

@@ -9,5 +9,6 @@
     <string name="sort">Sort</string>
     <string name="add_new_category">Add new category</string>
     <string name="name_empty_warning">Name cannot be empty</string>
+    <string name="delete_confirm">"Delete: \"%s\" ?"</string>
 
 </resources>

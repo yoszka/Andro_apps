@@ -14,7 +14,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/search" />
+            android:text="@string/search" 
+            android:enabled="false"/>
 
         <Button
             android:id="@+id/button2"
@@ -31,7 +32,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/sort" />
+            android:text="@string/sort" 
+            android:enabled="false"/>
 
     </LinearLayout>
 
