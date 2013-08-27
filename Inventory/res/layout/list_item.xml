@@ -81,8 +81,10 @@
         <LinearLayout
             android:id="@+id/list_item_dismiss_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:orientation="vertical"
+            android:paddingTop="9dp"
+            android:paddingBottom="10dp"
             android:visibility="gone" >
 
             <LinearLayout

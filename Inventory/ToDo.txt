@@ -1,5 +1,12 @@
-1. <DONE> Add method getCategories in order to provide picker in ADD option
-2. <DONE> Add ADD functionality (Activity)
-3. <DONE> Add EDIT on long press functionality
-4. <DONE> Add DELETE functionality on slide to dissmiss
-5. Figure out how to improve long press vs. slide to dismiss
+1.  <DONE> Add method getCategories in order to provide picker in ADD option
+2.  <DONE> Add ADD functionality (Activity)
+3.  <DONE> Add EDIT on long press functionality
+4.  <DONE> Add DELETE functionality on slide to dismiss
+5.  <DONE> [nothing to do, only emulator issue] Figure out how to improve long press v.s. slide to dismiss
+6.  <DONE> Remove animation when list element is dismissed and list is collapsing.
+7.  <DONE> Add animation to show/hide confirm deletion.
+8.  Add animation collapse and disappearing list item when, delete is confirmed
+9.  Fix different list item sizeS for content and for delete confirm.
+10. Fix canceling delete all list elements when one is canceled.
+11. Fix revert dismissing item (dismissed but not confirmed) when element get out of screen. 
+    Expected behavior: Dismiss or stay unconfirmed.

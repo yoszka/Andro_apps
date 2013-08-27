@@ -25,11 +25,13 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.view.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -254,6 +256,11 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
+//                                	LayoutParams layPam = mCurrentItem.findViewById(R.id.list_item_content_layout).getLayoutParams();
+//                                	LayoutParams layPam2 = mCurrentItem.findViewById(R.id.list_item_dismiss_layout).getLayoutParams();
+//                                	layPam2.height = layPam.height;
+//                                	mCurrentItem.findViewById(R.id.list_item_dismiss_layout).setLayoutParams(layPam2);
+                                	
                                 	mCurrentItem.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.VISIBLE);
                                 	mCurrentItem.findViewById(R.id.list_item_content_layout).setVisibility(View.GONE);
                                     performDismiss(downView, downPosition);
@@ -329,8 +336,10 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
         final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
         final int originalHeight = dismissView.getHeight();
+        final int originalWidth = dismissView.getWidth();
 
-        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(mAnimationTime);
+        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(mAnimationTime*8);
+//        ValueAnimator animator = ValueAnimator.ofInt(originalWidth, 1).setDuration(mAnimationTime*4);
 
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -365,12 +374,23 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                lp.height = (Integer) valueAnimator.getAnimatedValue();
-                dismissView.setLayoutParams(lp);
+//            	lp.height = (Integer) valueAnimator.getAnimatedValue();
+            	//dismissView.setLayoutParams(lp);
             }
         });
 
         mPendingDismisses.add(new PendingDismissData(dismissPosition, dismissView));
-        animator.start();
+//        animator.start();
+        
+        // Set position to opposite to dismissed
+        setTranslationX(dismissView, -ViewHelper.getTranslationX(dismissView));
+        
+        // animate showing "Delete confirm" list item
+        animate(dismissView)
+		        .translationX(0)
+		        .alpha(1)
+		        .setDuration(mAnimationTime*2)
+		        .setListener(null);
     }
+    
 }
