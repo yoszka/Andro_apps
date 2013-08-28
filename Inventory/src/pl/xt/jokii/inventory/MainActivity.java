@@ -1,6 +1,18 @@
 package pl.xt.jokii.inventory;
 
 
+import static com.nineoldandroids.view.ViewHelper.setAlpha;
+import static com.nineoldandroids.view.ViewHelper.setTranslationX;
+import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
+
+import java.util.Collections;
+
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.Animator.AnimatorListener;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.view.ViewHelper;
+
 import pl.xt.jokii.adapter.InventoryAdapter;
 import pl.xt.jokii.db.DbUtils;
 import pl.xt.jokii.db.InventoryEntry;
@@ -12,7 +24,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -21,6 +35,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+	protected static final String TAG = "Inventory";
 	private ListView mListView = null;
 	InventoryAdapter mInventoryAdapter;
 	SwipeDismissListViewTouchListener mTouchListener;
@@ -135,18 +150,32 @@ public class MainActivity extends Activity {
 		public void onClick(View v) {
 			Button btn = (Button)v;
 			Integer position = (Integer) btn.getTag();
-			
 			long dbId = ((InventoryAdapter)mListView.getAdapter()).getItem(position).getId();
 			DbUtils.deleteEntryDB(getApplicationContext(), dbId);
-			configureList();
-			mInventoryAdapter.notifyDataSetChanged();
+			//*
+			final View dismissingListItem = mListView.getChildAt(position);
+			removeItem(dismissingListItem, new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+				    super.onAnimationEnd(animation);
+				    dismissingListItem.setTag(null);
+				    configureList();
+				    mInventoryAdapter.notifyDataSetChanged();
+				}
+			});
+			
 		}
 	};
 	
 	private OnClickListener onDismissCancelClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-    		mInventoryAdapter.notifyDataSetChanged();
+			Button btn = (Button)v;
+			Integer position = (Integer) btn.getTag();
+
+			final View dismissingListItem = mListView.getChildAt(position);
+			animateCancelDismiss(dismissingListItem, null);
+
 		}
 	};
 	
@@ -173,5 +202,59 @@ public class MainActivity extends Activity {
 	    	}
 	    }
 	}
+	
+	
+	/**
+	 * Animate the dismissed list item to zero-height and fire the dismiss callback when
+	 * dismissed item animations have completed.
+	 * @param dismissView list view to dismiss
+	 * @param listener listener for animation end
+	 */
+	private void removeItem(final View dismissView, AnimatorListener listener) {
+		final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
+		final int originalHeight = dismissView.getHeight();
+		
+		int ANIMATION_TIME = 500;
+		ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(ANIMATION_TIME);
+		animator.addListener(listener);
+		
+		animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+			@Override
+			public void onAnimationUpdate(ValueAnimator valueAnimator) {
+				lp.height = (Integer) valueAnimator.getAnimatedValue();
+				dismissView.setLayoutParams(lp);
+			}
+		});
+		
+		
+		animator.start();
+		
+	}
+	
+	/**
+	 * Animate the dismissed list item "delete confirm" back to list item content by fade out-fade in animation
+	 * @param dismissView list view to dismiss
+	 * @param listener listener for animation end
+	 */
+    private void animateCancelDismiss(final View dismissView, final AnimatorListener listener) {
+        final int ANIMATION_TIME = 250;
+        
+        animate(dismissView)
+		        .alpha(0)
+		        .setDuration(ANIMATION_TIME)
+		        .setListener(new AnimatorListenerAdapter() {
+		        	@Override
+		        	public void onAnimationEnd(Animator animation) {
+		        		dismissView.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.GONE);
+		        		dismissView.findViewById(R.id.list_item_content_layout).setVisibility(View.VISIBLE);
+		        		animate(dismissView)
+	        				        .alpha(1)
+        				        	.setDuration(ANIMATION_TIME)
+        				        	.setListener(listener);
+		        	    super.onAnimationEnd(animation);
+		        	}
+				});
+        
+    }
 
 }

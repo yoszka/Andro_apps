@@ -67,7 +67,7 @@ public class InventoryAdapter extends BaseAdapter {
 	public View getView(int position, View rowView, ViewGroup parent) {
 		
 		if(getItemViewType(position) == InventoryEntry.TYPE_ENTRY){
-			if (rowView == null) {
+			if ((rowView == null) || (rowView.getTag() == null)) {
 				rowView = inflater.inflate(R.layout.list_item, null);
 			}
 			
