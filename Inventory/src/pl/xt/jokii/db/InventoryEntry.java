@@ -3,11 +3,18 @@ package pl.xt.jokii.db;
 public class InventoryEntry {
 	public static final int TYPE_ENTRY 	 = 0;
 	public static final int TYPE_CATEGORY = 1;
+	private EntryState mEntryState = EntryState.NORMAL;
 	private long 	id;
 	private String 	name;
 	private String 	category;
 	private int 	amount;
 	private int 	type;		// type of item for list adapter (category or entry)
+	
+	public enum EntryState{
+		NORMAL,
+		DISMISSED,
+		REMOVED
+	}
 	
 	
 	public long getId() {
@@ -40,4 +47,10 @@ public class InventoryEntry {
 	public void setType(int type) {
 	    this.type = type;
     }
+	public EntryState getEntryState() {
+		return mEntryState;
+	}
+	public void setEntryState(EntryState entryState) {
+		mEntryState = entryState;
+	}
 }

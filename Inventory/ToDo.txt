@@ -6,9 +6,10 @@
 6.  <DONE> Remove animation when list element is dismissed and list is collapsing.
 7.  <DONE> Add animation to show/hide confirm deletion.
 8.  <DONE> Add animation collapse and disappearing list item when, delete is confirmed
-9.  Fix different list item sizes for content and for delete confirm.
-10. Fix canceling delete all list elements when one is canceled.
-11. Fix revert dismissing item (dismissed but not confirmed) when element get out of screen. 
+9.  <NOT REPRODUCIBLE>Fix different list item sizes for content and for delete confirm.
+10. <NOT REPRODUCIBLE> Fix canceling delete all list elements when one is canceled.
+11. <DONE> Fix revert dismissing item (dismissed but not confirmed) when element get out of screen. 
     Expected behavior: Dismiss or stay unconfirmed.
 12. Add dismiss animation on category view when last item from given category is deleted (confirmed dismiss)
-13. <DONE> Add animation when click cancel on "delete confirm" item. 
+13. <DONE> Add animation when click cancel on "delete confirm" item.
+14.  Fix revert dismissing item (dismissed but not confirmed) when other element was deleted. (Cause: List is recreated from scratch, so current list item states are overwritten)

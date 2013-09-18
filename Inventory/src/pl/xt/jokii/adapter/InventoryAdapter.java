@@ -3,10 +3,12 @@ package pl.xt.jokii.adapter;
 import java.util.List;
 
 import pl.xt.jokii.db.InventoryEntry;
+import pl.xt.jokii.db.InventoryEntry.EntryState;
 import pl.xt.jokii.db.InventoryResultsSet;
 import pl.xt.jokii.inventory.R;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,15 +67,21 @@ public class InventoryAdapter extends BaseAdapter {
 	
 
 	public View getView(int position, View rowView, ViewGroup parent) {
-		
+		final EntryState entryState = getItem(position).getEntryState();
+//		Log.v("ADAPTER", "pos: " + position + ", rowView: " + rowView + ", tag: " + ((rowView != null)? rowView.getTag() : "null") + ", entryState: " + entryState + ", type: " + getItemViewType(position)+ ", n: " + getItem(position).getName());
 		if(getItemViewType(position) == InventoryEntry.TYPE_ENTRY){
-			if ((rowView == null) || (rowView.getTag() == null)) {
+			if ((rowView == null) || (rowView.getTag() == null) || (entryState == EntryState.REMOVED)) {
 				rowView = inflater.inflate(R.layout.list_item, null);
 			}
 			
 			// Set default items visibility
-			rowView.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.GONE);
-			rowView.findViewById(R.id.list_item_content_layout).setVisibility(View.VISIBLE);
+			if(entryState == EntryState.DISMISSED){
+				rowView.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.VISIBLE);
+				rowView.findViewById(R.id.list_item_content_layout).setVisibility(View.GONE);
+			}else{
+				rowView.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.GONE);
+				rowView.findViewById(R.id.list_item_content_layout).setVisibility(View.VISIBLE);
+			}
 			
 			// NAME
 			TextView textViewName = (TextView)rowView.findViewById(R.id.textViewName);

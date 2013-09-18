@@ -61,7 +61,7 @@
                 <Button
                     android:id="@+id/buttonPlus"
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="30dp"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:text="+" />
@@ -69,7 +69,7 @@
                 <Button
                     android:id="@+id/buttonMinus"
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="30dp"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:text="-" />

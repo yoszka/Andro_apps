@@ -17,10 +17,12 @@ import pl.xt.jokii.adapter.InventoryAdapter;
 import pl.xt.jokii.db.DbUtils;
 import pl.xt.jokii.db.InventoryEntry;
 import pl.xt.jokii.db.InventoryResultsSet;
+import pl.xt.jokii.db.InventoryEntry.EntryState;
 import pl.xt.jokii.slidetodismiss.SwipeDismissListViewTouchListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -66,6 +68,7 @@ public class MainActivity extends Activity {
 							
 //							long dbId = ((InventoryAdapter)mListView.getAdapter()).getItem(position).getId();
 //							DbUtils.deleteEntryDB(getApplicationContext(), dbId);
+							getListItemEntryByPosition(position).setEntryState(EntryState.DISMISSED);
 						}
 //						mInventoryAdapter.notifyDataSetChanged();
 			    		// recreate list from DB
@@ -152,13 +155,17 @@ public class MainActivity extends Activity {
 			Integer position = (Integer) btn.getTag();
 			long dbId = ((InventoryAdapter)mListView.getAdapter()).getItem(position).getId();
 			DbUtils.deleteEntryDB(getApplicationContext(), dbId);
+			getListItemEntryByPosition(position).setEntryState(EntryState.REMOVED);
 			//*
-			final View dismissingListItem = mListView.getChildAt(position);
+//			final View dismissingListItem = mListView.getChildAt(position);
+			final View dismissingListItem = (View) v.getParent().getParent().getParent().getParent(); // Get overlying FrameLayout
+//			Log.v("ADAPTER M", "pos: " + position + ", view: " + dismissingListItem + ", tag: " + ((dismissingListItem != null)? dismissingListItem.getTag() : "null") + ", entryState: " + getListItemEntryByPosition(position).getEntryState() + ", n: " + getListItemEntryByPosition(position).getName());
+			dismissingListItem.setTag(null);
+//			Log.v("ADAPTER M2", "pos: " + position + ", view: " + dismissingListItem + ", tag: " + ((dismissingListItem != null)? dismissingListItem.getTag() : "null") + ", entryState: " + getListItemEntryByPosition(position).getEntryState() + ", n: " + getListItemEntryByPosition(position).getName());
 			removeItem(dismissingListItem, new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
 				    super.onAnimationEnd(animation);
-				    dismissingListItem.setTag(null);
 				    configureList();
 				    mInventoryAdapter.notifyDataSetChanged();
 				}
@@ -172,8 +179,16 @@ public class MainActivity extends Activity {
 		public void onClick(View v) {
 			Button btn = (Button)v;
 			Integer position = (Integer) btn.getTag();
+			getListItemEntryByPosition(position).setEntryState(EntryState.NORMAL);
+			final View dismissingListItem = (View) v.getParent().getParent().getParent(); // Get overlying FrameLayout
+			
+//			Log.v(TAG, "parent parenta parenta: "+  v.getParent().getParent().getParent());
 
-			final View dismissingListItem = mListView.getChildAt(position);
+//			final View dismissingListItem = mListView.getChildAt(position); 
+//			Log.v(TAG, "dismissingListItem.getTag() =  " + dismissingListItem.getTag());
+//			String name = ((InventoryEntry)mListView.getAdapter().getItem(position)).getName();
+//			String name = ((TextView)dismissingListItem.findViewById(R.id.textViewName)).getText().toString();
+//			Log.v(TAG, "position: " + position + ", name: "+name+ ", id= "+Integer.toHexString(dismissingListItem.getId())+", dismissingListItem: " + dismissingListItem);
 			animateCancelDismiss(dismissingListItem, null);
 
 		}
@@ -238,23 +253,35 @@ public class MainActivity extends Activity {
 	 */
     private void animateCancelDismiss(final View dismissView, final AnimatorListener listener) {
         final int ANIMATION_TIME = 250;
+        final Handler handler = new Handler();
         
         animate(dismissView)
-		        .alpha(0)
+		        .alpha(0.01f)
 		        .setDuration(ANIMATION_TIME)
 		        .setListener(new AnimatorListenerAdapter() {
 		        	@Override
 		        	public void onAnimationEnd(Animator animation) {
-		        		dismissView.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.GONE);
-		        		dismissView.findViewById(R.id.list_item_content_layout).setVisibility(View.VISIBLE);
-		        		animate(dismissView)
-	        				        .alpha(1)
-        				        	.setDuration(ANIMATION_TIME)
-        				        	.setListener(listener);
+		        		handler.post( new Runnable() {
+	                        public void run() {
+	                        	Log.v(TAG, "dismisView = " + dismissView +", id= "+Integer.toHexString(dismissView.getId()));
+	                        	Log.v(TAG, "list_item_dismiss_layout = " + dismissView.findViewById(R.id.list_item_dismiss_layout) +((dismissView.findViewById(R.id.list_item_dismiss_layout) != null)?", id= "+Integer.toHexString(dismissView.findViewById(R.id.list_item_dismiss_layout).getId()):""));
+	                        	Log.v(TAG, "list_item_content_layout = " + dismissView.findViewById(R.id.list_item_content_layout) +((dismissView.findViewById(R.id.list_item_content_layout) != null)?", id= "+Integer.toHexString(dismissView.findViewById(R.id.list_item_content_layout).getId()):""));
+	                        	dismissView.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.GONE);
+	                        	dismissView.findViewById(R.id.list_item_content_layout).setVisibility(View.VISIBLE);
+	                        	animate(dismissView)
+	                        	.alpha(1f)
+	                        	.setDuration(ANIMATION_TIME)
+	                        	.setListener(listener);
+	                        }
+                        });
 		        	    super.onAnimationEnd(animation);
 		        	}
 				});
         
+    }
+    
+    private InventoryEntry getListItemEntryByPosition(int position){
+    	return ((InventoryAdapter)mListView.getAdapter()).getItem(position);
     }
 
 }
