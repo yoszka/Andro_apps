@@ -9,6 +9,7 @@ import pl.xt.jokii.db.InventoryResultsSet;
 import pl.xt.jokii.inventory.R;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -110,7 +111,18 @@ public class InventoryAdapter extends BaseAdapter {
 					String.format(mAppResources.getString(R.string.delete_confirm), getItem(position).getName()));
 			// AMOUNT
 			EditText editTextAmount = (EditText) rowView.findViewById(R.id.editTextAmount);
-			editTextAmount.setText(String.valueOf(getItem(position).getAmount()));
+			int amount = getItem(position).getAmount();
+			editTextAmount.setText(String.valueOf(amount));
+			if(amount == 0){
+				editTextAmount.setBackgroundColor(Color.RED);
+				editTextAmount.setTextColor(Color.WHITE);
+			}else if(amount < 2){
+				editTextAmount.setBackgroundColor(Color.YELLOW);
+				editTextAmount.setTextColor(Color.RED);
+			}else{
+				editTextAmount.setBackgroundColor(Color.GREEN);
+				editTextAmount.setTextColor(Color.BLACK);
+			}
 			// BUTTONS
 			Button buttonPlus  = (Button) rowView.findViewById(R.id.buttonPlus);
 			buttonPlus.setTag((Integer)position);
