@@ -1,5 +1,6 @@
 package pl.xt.jokii.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.xt.jokii.db.InventoryEntry;
@@ -37,6 +38,22 @@ public class InventoryAdapter extends BaseAdapter {
 	
 	public void setResultSet(InventoryResultsSet resultSet){
 		mEntries =  resultSet.getEntriesWithCategories();
+	}
+	
+	/**
+	 * Use adapter entries with given {@code resultSet} and update it.
+	 * Entries state will be taken from original entries set.
+	 * @param resultSet
+	 */
+	public void updateResultSet(InventoryResultsSet resultSet){
+		List<InventoryEntry> dismissedEntries = getDismissedEntries();
+		for(InventoryEntry entry : dismissedEntries){
+			InventoryEntry e = resultSet.getEntryByDbId(entry.getId());
+			if(e != null){
+				e.setEntryState(EntryState.DISMISSED);
+			}
+		}
+		setResultSet(resultSet);
 	}
 	
 	public void setOnButtonPlusClickListener(OnClickListener listener){
@@ -136,6 +153,14 @@ public class InventoryAdapter extends BaseAdapter {
 	    return getItem(position).getType();
 	}
 	
-	
+	public List<InventoryEntry> getDismissedEntries(){
+		List<InventoryEntry> dismissedEntriesList = new ArrayList<InventoryEntry>();
+		for(InventoryEntry entry : mEntries){
+			if(entry.getEntryState() == EntryState.DISMISSED){
+				dismissedEntriesList.add(entry);
+			}
+		}
+		return dismissedEntriesList;
+	}
 
 }

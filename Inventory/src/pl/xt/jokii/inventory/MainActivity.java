@@ -6,6 +6,7 @@ import static com.nineoldandroids.view.ViewHelper.setTranslationX;
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
 import java.util.Collections;
+import java.util.List;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
@@ -99,7 +100,7 @@ public class MainActivity extends Activity {
 			mInventoryAdapter = new InventoryAdapter(getResources(), resultSet, getLayoutInflater());
 			mListView.setAdapter(mInventoryAdapter);
 		}else{
-			mInventoryAdapter.setResultSet(resultSet);
+			mInventoryAdapter.updateResultSet(resultSet);
 		}
 		
      	mInventoryAdapter.setOnButtonPlusClickListener(onPlusClickListener);

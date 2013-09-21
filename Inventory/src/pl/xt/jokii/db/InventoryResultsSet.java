@@ -363,6 +363,7 @@ public class InventoryResultsSet {
 			currentCategory = entry.getCategory();
 
 			if((i == 0) || (!previousCategory.equals(currentCategory))){
+				// Add additional entry as category
 				InventoryEntry ie = new InventoryEntry();
 				ie.setCategory(currentCategory);
 				ie.setType(InventoryEntry.TYPE_CATEGORY);

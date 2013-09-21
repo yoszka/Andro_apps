@@ -12,4 +12,5 @@
     Expected behavior: Dismiss or stay unconfirmed.
 12. Add dismiss animation on category view when last item from given category is deleted (confirmed dismiss)
 13. <DONE> Add animation when click cancel on "delete confirm" item.
-14.  Fix revert dismissing item (dismissed but not confirmed) when other element was deleted. (Cause: List is recreated from scratch, so current list item states are overwritten)
+14. <DONE> Fix revert dismissing item (dismissed but not confirmed) when other element was deleted. (Cause: List is recreated from scratch, so current list item states are overwritten)
+15. Add coloring counter on list item related to item count: red, yellow, blue.
