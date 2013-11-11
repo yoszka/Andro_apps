@@ -6,9 +6,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" 
+        android:orientation="horizontal">
 
-        <Button
+        <!--Button
             android:id="@+id/button1"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="0dp"
@@ -33,9 +34,25 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/sort" 
-            android:enabled="false"/>
+            android:enabled="false"/-->
+
+        <EditText
+            android:id="@+id/editTextsearchView"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:hint="@string/search"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_menu_name" 
+            android:onClick="onClickClearSearch"/>
 
     </LinearLayout>
+
 
     <ListView
         android:id="@+id/listView1"
@@ -46,7 +63,7 @@
         android:dividerHeight="10.0sp"
         android:paddingLeft="10.0sp"
         android:paddingRight="10.0sp"
-        android:paddingTop="10.0sp"
+        android:paddingTop="0dp"
         android:scrollbars="none|none" >
 
     </ListView>

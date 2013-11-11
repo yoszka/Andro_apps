@@ -1,19 +1,12 @@
 package pl.xt.jokii.inventory;
 
 
-import static com.nineoldandroids.view.ViewHelper.setAlpha;
-import static com.nineoldandroids.view.ViewHelper.setTranslationX;
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
-
-import java.util.Collections;
-import java.util.List;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ValueAnimator;
-import com.nineoldandroids.view.ViewHelper;
-
 import pl.xt.jokii.adapter.InventoryAdapter;
 import pl.xt.jokii.db.DbUtils;
 import pl.xt.jokii.db.InventoryEntry;
@@ -22,24 +15,34 @@ import pl.xt.jokii.db.InventoryEntry.EntryState;
 import pl.xt.jokii.slidetodismiss.SwipeDismissListViewTouchListener;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.SearchViewCompat;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	protected static final String TAG = "Inventory";
-	private ListView mListView = null;
+    private static final int LIGHT_RED   = Color.RED   + 0x0000cccc;    // make lighter red
+    private static final int LIGHT_GREEN = Color.GREEN + 0x00cc00cc;    // make lighter green
+	private EditText mEditTextSearchView;
+	private ListView mListView;
 	InventoryAdapter mInventoryAdapter;
 	SwipeDismissListViewTouchListener mTouchListener;
 
@@ -49,6 +52,8 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 		
 		mListView = (ListView)findViewById(R.id.listView1); 
+		mEditTextSearchView = (EditText)findViewById(R.id.editTextsearchView);
+		
 //		mListView.setOnItemClickListener(new OnItemClickListener() {
 //			public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
 //			}
@@ -86,13 +91,31 @@ public class MainActivity extends Activity {
         // Setting this scroll listener is required to ensure that during ListView scrolling,
         // we don't look for swipes.
         mListView.setOnScrollListener(mTouchListener.makeScrollListener());
+
+
+        mEditTextSearchView.addTextChangedListener(mTextWatcher);
+    }
+
+	private TextWatcher mTextWatcher = new TextWatcher() {
         
-	}
-	
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            refreshList();
+        }
+        
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void afterTextChanged(Editable s) {}
+    };
+
+    /**
+     * Configure and reload data to list
+     */
 	private void configureList(){
 		InventoryResultsSet resultSet = new InventoryResultsSet();
 		
-		resultSet = DbUtils.retrieveResultSet(getApplicationContext());
+		resultSet = DbUtils.retrieveResultSet(getApplicationContext(), mEditTextSearchView.getText().toString());
 		
 		mInventoryAdapter = (InventoryAdapter) mListView.getAdapter();
 		
@@ -103,7 +126,7 @@ public class MainActivity extends Activity {
 			mInventoryAdapter.updateResultSet(resultSet);
 		}
 		
-     	mInventoryAdapter.setOnButtonPlusClickListener(onPlusClickListener);
+	    mInventoryAdapter.setOnButtonPlusClickListener(onPlusClickListener);
      	mInventoryAdapter.setOnButtonMinusClickListener(onMinusClickListener);
      	mInventoryAdapter.setOnButtonDismissOkClickListener(onDismissOkClickListener);
      	mInventoryAdapter.setOnButtonDismissCancelClickListener(onDismissCancelClickListener);
@@ -195,16 +218,34 @@ public class MainActivity extends Activity {
 		}
 	};
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-	
-	public void onClickAdd(View v){
-		startActivityForResult(new Intent(getApplicationContext(), AddEditActivity.class), R.id.add_entry_req_id);
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+
+        switch(item.getItemId()){
+        case R.id.action_add:
+            startActivityForResult(new Intent(getApplicationContext(), AddEditActivity.class), R.id.add_entry_req_id);
+            return true;
+
+        default:
+            return super.onMenuItemSelected(featureId, item);
+        }
+    }
+    
+    public void onClickAdd(View v){
+        startActivityForResult(new Intent(getApplicationContext(), AddEditActivity.class), R.id.add_entry_req_id);
+    }
+
+    public void onClickClearSearch(View v){
+        mEditTextSearchView.setText("");
+        refreshList();
+    }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -212,9 +253,7 @@ public class MainActivity extends Activity {
 	    
 	    if(requestCode == R.id.add_entry_req_id){
 	    	if(resultCode == Activity.RESULT_OK){
-	    		// recreate list from DB
-	    		configureList();
-	    		mListView.invalidateViews();
+	    	    refreshList();
 	    	}
 	    }
 	}
@@ -280,9 +319,29 @@ public class MainActivity extends Activity {
 				});
         
     }
-    
+
     private InventoryEntry getListItemEntryByPosition(int position){
-    	return ((InventoryAdapter)mListView.getAdapter()).getItem(position);
+        return ((InventoryAdapter)mListView.getAdapter()).getItem(position);
     }
 
+    /**
+     * Recreate list from DB. Entries retrieved with pattern from search bar.
+     */
+    private void refreshList(){
+        configureList();
+        mListView.invalidateViews();
+        updateSearchBarColor();
+    }
+    
+    private void updateSearchBarColor(){
+        if(TextUtils.isEmpty(mEditTextSearchView.getText())){
+            mEditTextSearchView.setBackgroundColor(Color.WHITE);
+        }else{
+            if(mInventoryAdapter.getCount() == 0){
+                mEditTextSearchView.setBackgroundColor(LIGHT_RED);
+            }else{
+                mEditTextSearchView.setBackgroundColor(LIGHT_GREEN);
+            }
+        }
+    }
 }

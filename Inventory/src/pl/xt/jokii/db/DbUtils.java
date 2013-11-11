@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 public abstract class DbUtils {
@@ -91,12 +92,21 @@ public abstract class DbUtils {
 	
 	/**
 	 * Get entries from data base and put to InventoryResultsSet
+	 * @param ctx
+	 * @param pattern pattern to filter by {@code Name}
 	 * @return InventoryResultsSet filed with entries from data base, null if none entry was retrieved 
 	 */
-	public static InventoryResultsSet retrieveResultSet(Context ctx){
+	public static InventoryResultsSet retrieveResultSet(Context ctx, String pattern){
 		InventoryResultsSet resultsSet = new InventoryResultsSet();
 		
-	   	 Cursor cursor = ctx.getContentResolver().query(InventoryProviderMetaData.InventoryTableMetaData.CONTENT_URI, null, null, null, null);
+		pattern = (pattern != null)? pattern.trim() : pattern;
+		
+		if(TextUtils.isEmpty(pattern)){
+		    pattern = null;
+		}else{
+		    pattern = InventoryTableMetaData.INVENTORY_NAME+" LIKE '%"+pattern+"%'";
+		}
+	   	 Cursor cursor = ctx.getContentResolver().query(InventoryProviderMetaData.InventoryTableMetaData.CONTENT_URI, null, pattern, null, null);
 	   	 
 	   	 while(cursor.moveToNext()){
 	   		InventoryEntry inventoryEntryTmp = new InventoryEntry();

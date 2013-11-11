@@ -57,7 +57,7 @@ public class AddEditActivity extends Activity{
 	}
 	
 	private void prepareEntryToEdit(long id){
-		InventoryResultsSet resultSet = DbUtils.retrieveResultSet(getApplicationContext());
+		InventoryResultsSet resultSet = DbUtils.retrieveResultSet(getApplicationContext(), null);
 		InventoryEntry entry = resultSet.getEntryByDbId(id);
 		
 		mEditTextAmount.setText(String.valueOf(entry.getAmount()));
@@ -86,7 +86,7 @@ public class AddEditActivity extends Activity{
 	
 	@SuppressWarnings("unchecked")
     private ArrayList<String> getListOfExistingCategories(){
-		return (ArrayList<String>) DbUtils.retrieveResultSet(getApplicationContext()).getCategories().clone();
+		return (ArrayList<String>) DbUtils.retrieveResultSet(getApplicationContext(), null).getCategories().clone();
 	}
 	
 	OnItemSelectedListener onCategorySelectedListener = new OnItemSelectedListener() {
