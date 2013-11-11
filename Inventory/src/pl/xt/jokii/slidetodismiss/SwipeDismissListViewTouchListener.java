@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import pl.xt.jokii.inventory.Debug;
 import pl.xt.jokii.inventory.R;
 
 import static com.nineoldandroids.view.ViewHelper.setAlpha;
@@ -105,6 +106,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     private boolean mPaused;
 
     private View mCurrentItem;
+    private boolean mDismissing = false;
 
     /**
      * The callback interface used by {@link SwipeDismissListViewTouchListener} to inform its client
@@ -120,6 +122,11 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
          *                               order for convenience.
          */
         void onDismiss(ListView listView, int[] reverseSortedPositions);
+        
+        /**
+         * Called when user start dismiss operation.
+         */
+        void onUserActionStart();
     }
 
     /**
@@ -131,7 +138,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
      */
     public SwipeDismissListViewTouchListener(ListView listView, OnDismissCallback callback) {
         ViewConfiguration vc = ViewConfiguration.get(listView.getContext());
-        mSlop = vc.getScaledTouchSlop();
+        mSlop = vc.getScaledTouchSlop()*2;
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity();
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
         mAnimationTime = listView.getContext().getResources().getInteger(
@@ -174,6 +181,9 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        if(mDismissing){
+            return false;
+        }
         if (mViewWidth < 2) {
             mViewWidth = mListView.getWidth();
         }
@@ -245,6 +255,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     dismissRight = mVelocityTracker.getXVelocity() > 0;
                 }
                 if (dismiss) {
+                    mDismissing = true;
                     // dismiss
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
@@ -256,13 +267,22 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
+                                    Debug.log("onAnimationEnd", "animation= "+ animation +", mCurrentItem="+ mCurrentItem);
 //                                	LayoutParams layPam = mCurrentItem.findViewById(R.id.list_item_content_layout).getLayoutParams();
 //                                	LayoutParams layPam2 = mCurrentItem.findViewById(R.id.list_item_dismiss_layout).getLayoutParams();
 //                                	layPam2.height = layPam.height;
 //                                	mCurrentItem.findViewById(R.id.list_item_dismiss_layout).setLayoutParams(layPam2);
                                 	
-                                	mCurrentItem.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.VISIBLE);
-                                	mCurrentItem.findViewById(R.id.list_item_content_layout).setVisibility(View.GONE);
+                                    View itemView = mCurrentItem.findViewById(R.id.list_item_dismiss_layout);
+                                    if(itemView != null){
+                                        itemView.setVisibility(View.VISIBLE);
+                                    }
+                                    itemView = mCurrentItem.findViewById(R.id.list_item_content_layout);
+                                    if(itemView != null){
+                                        itemView.setVisibility(View.GONE);
+                                    }
+//                                	mCurrentItem.findViewById(R.id.list_item_dismiss_layout).setVisibility(View.VISIBLE);
+//                                	mCurrentItem.findViewById(R.id.list_item_content_layout).setVisibility(View.GONE);
                                     performDismiss(downView, downPosition);
                                 }
                             });
@@ -334,9 +354,13 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
         // all dismissed list item animations have completed. This triggers layout on each animation
         // frame; in the future we may want to do something smarter and more performant.
 
+        mCallback.onUserActionStart();
+        mPendingDismisses.add(new PendingDismissData(dismissPosition, dismissView));
+
         final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
         final int originalHeight = dismissView.getHeight();
         final int originalWidth = dismissView.getWidth();
+
 
         ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(mAnimationTime*8);
 //        ValueAnimator animator = ValueAnimator.ofInt(originalWidth, 1).setDuration(mAnimationTime*4);
@@ -344,6 +368,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                mDismissing = false;
                 --mDismissAnimationRefCount;
                 if (mDismissAnimationRefCount == 0) {
                     // No active animations, process all pending dismisses.
@@ -379,7 +404,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 //            }
 //        });
 
-        mPendingDismisses.add(new PendingDismissData(dismissPosition, dismissView));
+//        mPendingDismisses.add(new PendingDismissData(dismissPosition, dismissView));
         animator.start();
         
         // Set position to opposite to dismissed

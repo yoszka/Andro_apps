@@ -100,7 +100,8 @@
                     android:text="Name dismissed"
                     android:textColor="#FF0000"
                     android:textSize="16sp"
-                    android:maxLines="2"
+                    
+                    android:singleLine="true"
                     android:textStyle="bold" />
             </LinearLayout>
 

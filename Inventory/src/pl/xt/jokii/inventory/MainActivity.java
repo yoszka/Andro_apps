@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -41,7 +42,8 @@ public class MainActivity extends Activity {
 	protected static final String TAG = "Inventory";
     private static final int LIGHT_RED   = Color.RED   + 0x0000cccc;    // make lighter red
     private static final int LIGHT_GREEN = Color.GREEN + 0x00cc00cc;    // make lighter green
-	private EditText mEditTextSearchView;
+    private EditText mEditTextSearchView;
+	private ImageButton   mButtonSearchView;
 	private ListView mListView;
 	InventoryAdapter mInventoryAdapter;
 	SwipeDismissListViewTouchListener mTouchListener;
@@ -52,7 +54,9 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 		
 		mListView = (ListView)findViewById(R.id.listView1); 
-		mEditTextSearchView = (EditText)findViewById(R.id.editTextsearchView);
+		mEditTextSearchView = (EditText)    findViewById(R.id.editTextsearchView);
+		mButtonSearchView   = (ImageButton) findViewById(R.id.buttonSearchView);
+		mButtonSearchView.setEnabled(false);
 		
 //		mListView.setOnItemClickListener(new OnItemClickListener() {
 //			public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
@@ -67,6 +71,10 @@ public class MainActivity extends Activity {
 				new SwipeDismissListViewTouchListener.OnDismissCallback() {
 					@Override
 					public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+					    Debug.log("onDismiss", listView + ", " + reverseSortedPositions);
+					    updateSearchBarColor(true);                          // Now search bar is enabled again
+//					    mListView.setOnTouchListener(mTouchListener);        // bring back touches
+
 						for (int position : reverseSortedPositions) {
 							// Do nothing, just wait for confirm or cancel
 							// mInventoryAdapter.remove(mInventoryAdapter.getItem(position));
@@ -83,6 +91,12 @@ public class MainActivity extends Activity {
 //						configureList();
 //			    		mInventoryAdapter.notifyDataSetChanged();
 					}
+
+                    @Override
+                    public void onUserActionStart() {
+                        updateSearchBarColor(false);                         // Block search bar when dismiss is in progress
+//                        mListView.setOnTouchListener(null);                  // Disable touches on list item
+                    }
 				});
 		configureList();
      	
@@ -100,6 +114,11 @@ public class MainActivity extends Activity {
         
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(TextUtils.isEmpty(s)){
+                mButtonSearchView.setEnabled(false);
+            }else{
+                mButtonSearchView.setEnabled(true);
+            }
             refreshList();
         }
         
@@ -201,6 +220,7 @@ public class MainActivity extends Activity {
 	private OnClickListener onDismissCancelClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+		    Debug.log("onClick", v);
 			Button btn = (Button)v;
 			Integer position = (Integer) btn.getTag();
 			getListItemEntryByPosition(position).setEntryState(EntryState.NORMAL);
@@ -321,6 +341,7 @@ public class MainActivity extends Activity {
     }
 
     private InventoryEntry getListItemEntryByPosition(int position){
+        Debug.log("getListItemEntryByPosition", position);
         return ((InventoryAdapter)mListView.getAdapter()).getItem(position);
     }
 
@@ -328,20 +349,37 @@ public class MainActivity extends Activity {
      * Recreate list from DB. Entries retrieved with pattern from search bar.
      */
     private void refreshList(){
+        Debug.log("refreshList");
         configureList();
+//        mInventoryAdapter.notifyDataSetChanged();
         mListView.invalidateViews();
-        updateSearchBarColor();
+        updateSearchBarColor(null);
     }
     
-    private void updateSearchBarColor(){
-        if(TextUtils.isEmpty(mEditTextSearchView.getText())){
-            mEditTextSearchView.setBackgroundColor(Color.WHITE);
+    /**
+     * Update search bar UI
+     * @param inputEnabled determine new input state, if {@code null} then use current
+     */
+    private void updateSearchBarColor(Boolean inputEnabled){
+        if(inputEnabled != null){
+            mEditTextSearchView.setEnabled(inputEnabled);
+            mButtonSearchView.setEnabled(inputEnabled);
         }else{
-            if(mInventoryAdapter.getCount() == 0){
-                mEditTextSearchView.setBackgroundColor(LIGHT_RED);
+            inputEnabled = mEditTextSearchView.isEnabled();
+        }
+
+        if(inputEnabled){
+            if(TextUtils.isEmpty(mEditTextSearchView.getText())){
+                mEditTextSearchView.setBackgroundColor(Color.WHITE);
             }else{
-                mEditTextSearchView.setBackgroundColor(LIGHT_GREEN);
+                if(mInventoryAdapter.getCount() == 0){
+                    mEditTextSearchView.setBackgroundColor(LIGHT_RED);
+                }else{
+                    mEditTextSearchView.setBackgroundColor(LIGHT_GREEN);
+                }
             }
+        }else{
+            mEditTextSearchView.setBackgroundColor(Color.LTGRAY);
         }
     }
 }

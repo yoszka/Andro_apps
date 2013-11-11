@@ -1,5 +1,9 @@
 package pl.xt.jokii.db;
 
+import android.util.Log;
+import pl.xt.jokii.inventory.BuildConfig;
+import pl.xt.jokii.inventory.Debug;
+
 public class InventoryEntry {
 	public static final int TYPE_ENTRY 	 = 0;
 	public static final int TYPE_CATEGORY = 1;
@@ -51,6 +55,7 @@ public class InventoryEntry {
 		return mEntryState;
 	}
 	public void setEntryState(EntryState entryState) {
+	    Debug.log("setEntryState", entryState);
 		mEntryState = entryState;
 	}
 }

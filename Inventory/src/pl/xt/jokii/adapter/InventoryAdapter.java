@@ -6,6 +6,7 @@ import java.util.List;
 import pl.xt.jokii.db.InventoryEntry;
 import pl.xt.jokii.db.InventoryEntry.EntryState;
 import pl.xt.jokii.db.InventoryResultsSet;
+import pl.xt.jokii.inventory.Debug;
 import pl.xt.jokii.inventory.R;
 
 import android.content.res.Resources;
@@ -76,6 +77,7 @@ public class InventoryAdapter extends BaseAdapter {
 	}
 
 	public InventoryEntry getItem(int position) {
+	    Debug.log("getItem", "position=" +position + ", size=" + getCount());
 		return mEntries.get(position);
 	}
 
