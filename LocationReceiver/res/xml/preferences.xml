@@ -22,6 +22,16 @@
                 
     <PreferenceCategory
             android:title="@string/localizer">
+        
+        <CheckBoxPreference 
+            android:key="is_pooling_enabled"
+            android:title="@string/pooling"/>
+
+        <EditTextPreference
+                android:key="localized_phone_number"
+                android:title="@string/localized_phone_number"
+                android:dialogTitle="@string/localized_phone_number"
+                android:enabled="false"/>
 
         <EditTextPreference
                 android:key="locaization_count"
@@ -29,8 +39,25 @@
                 android:summary="@string/locaization_count_summary"
                 android:dialogTitle="@string/locaization_count" 
                 android:enabled="false"/>
-                
-            
+
+        <EditTextPreference
+            android:key="last_locations_count"
+            android:title="@string/last_locations_count"
+            android:summary="@string/last_locations_count_summary"
+            android:dialogTitle="@string/last_locations_count_dialog_title"
+            android:defaultValue="1"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            />
+
+        <EditTextPreference
+            android:key="preference_user_to_track"
+            android:title="@string/preference_user_to_track"
+            android:dialogTitle="@string/username"
+            android:defaultValue="user_generic"
+            android:selectAllOnFocus="true"
+            />
+
         <PreferenceScreen
                 android:key="start"
                 android:title="@string/start"

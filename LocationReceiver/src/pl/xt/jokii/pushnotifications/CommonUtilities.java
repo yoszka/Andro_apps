@@ -4,7 +4,12 @@ package pl.xt.jokii.pushnotifications;
 public final class CommonUtilities {
     
     // give your server registration url here
-    public static final String SERVER_URL = "http://pinnote.zz.mu/register.php";
+    public static final String SERVER_URL          = "http://pinnote.zz.mu/";
+    public static final String REGISTRATION_SITE   = "register.php";
+    public static final String UNREGISTRATION_SITE = "unregister.php";
+    
+    public static final String LOCALIZER_PREFERENCES = "LOCALIZER_PREFERENCES";
+    public static final String POOLING_ENABLED = "POOLING_ENABLED";    
  
     // Google project id
     public static final String SENDER_ID = "1067864210918";
