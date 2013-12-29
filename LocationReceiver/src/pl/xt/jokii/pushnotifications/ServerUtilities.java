@@ -1,6 +1,8 @@
 package pl.xt.jokii.pushnotifications;
  
 import static pl.xt.jokii.pushnotifications.CommonUtilities.SERVER_URL;
+import static pl.xt.jokii.pushnotifications.CommonUtilities.REGISTRATION_SITE;
+import static pl.xt.jokii.pushnotifications.CommonUtilities.UNREGISTRATION_SITE;
 import static pl.xt.jokii.pushnotifications.CommonUtilities.TAG;
 
 import java.io.IOException;
@@ -13,6 +15,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import pl.xt.jokii.locationreceiver.GCMIntentService;
+import pl.xt.jokii.locationreceiver.OnUnregisteredListener;
 
 import android.content.Context;
 import android.util.Log;
@@ -30,7 +35,7 @@ public final class ServerUtilities {
      */
     public static void register(final Context context, String name, String email, final String regId) {
         Log.i(TAG, "registering device (regId = " + regId + ")");
-        String serverUrl = SERVER_URL;
+        String serverUrl = SERVER_URL+REGISTRATION_SITE;
         Map<String, String> params = new HashMap<String, String>();
         params.put("regId", regId);
         params.put("name", name);
@@ -79,17 +84,22 @@ public final class ServerUtilities {
     /**
      * Unregister this account/device pair within the server.
      */
-    public static void unregister(final Context context, final String regId) {
+    public static void unregister(final Context context, final String regId, OnUnregisteredListener onUnregisterlistener) {
         Log.i(TAG, "unregistering device (regId = " + regId + ")");
-        String serverUrl = SERVER_URL + "/unregister";
+        String serverUrl = SERVER_URL+UNREGISTRATION_SITE;
         Map<String, String> params = new HashMap<String, String>();
         params.put("regId", regId);
+        
+        GCMIntentService.onUnregisteredListener = onUnregisterlistener;
+        
         try {
             post(serverUrl, params);
             GCMRegistrar.setRegisteredOnServer(context, false);
+            GCMRegistrar.unregister(context);
 //            String message = context.getString(R.string.server_unregistered);
 //            CommonUtilities.displayMessage(context, message);
         } catch (IOException e) {
+            e.printStackTrace();
             // At this point the device is unregistered from GCM, but still
             // registered in the server.
             // We could try to unregister again, but it is not necessary:

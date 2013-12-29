@@ -1,0 +1,2 @@
+1.1.0 - Added signal type indicator icon
+1.2.1 - Add displaying past positions feature.

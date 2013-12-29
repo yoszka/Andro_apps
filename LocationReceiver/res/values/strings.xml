@@ -10,10 +10,17 @@
     <string name="log_out_summary">Log out from receiving notifications</string>
     <string name="singup">Sing Up</string>
     <string name="localizer">Localizer</string>
+    <string name="localized_phone_number">Phone number</string>
     <string name="locaization_count">Locaization count</string>
-    <string name="locaization_count_summary">How many times location will be updates (period 30s)</string>
+    <string name="locaization_count_summary">How many times location will be updates</string>
     <string name="start">Start</string>
+    <string name="last_locations_count">Last locations count</string>
+    <string name="preference_user_to_track">User to track</string>
     <string name="start_summary">Send localization request to remote device</string>
+    <string name="last_locations_count_dialog_title">Count</string>
+    <string name="username">Username</string>
+    <string name="last_locations_count_summary">Show at least %s locations</string>
     <string name="register_summary_on_already_registered">Already registered to GCM</string>
+    <string name="pooling">Enable DB pooling</string>
 
 </resources>

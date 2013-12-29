@@ -24,6 +24,10 @@ public class RegisterActivity extends Activity {
     // alert dialog manager
     AlertDialogManager alert = new AlertDialogManager();
     
+    public static String name;
+    public static String email;
+    public static OnRegisteredListener onRegisterListener;
+    
     // Asyntask
     AsyncTask<Void, Void, Void> mRegisterTask;
     
@@ -45,7 +49,7 @@ public class RegisterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
  
-        cd = new ConnectionDetector(getApplicationContext());
+        cd = new ConnectionDetector(RegisterActivity.this);
  
         // Check if Internet present
         if (!cd.isConnectingToInternet()) {
@@ -85,7 +89,7 @@ public class RegisterActivity extends Activity {
                 // Check if user filled the form
                 if(name.trim().length() > 0 && email.trim().length() > 0){
 //                    // Launch Main Activity
-//                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//                    Intent i = new Intent(RegisterActivity.this, MainActivity.class);
 // 
 //                    // Registering user on our server
 //                    // Sending registraiton details to MainActivity
@@ -97,14 +101,14 @@ public class RegisterActivity extends Activity {
 						@Override
 						public void onRegistered() {
 							progresDialog.dismiss();
-							Toast.makeText(getApplicationContext(), "Registered", Toast.LENGTH_LONG).show();
+							Toast.makeText(RegisterActivity.this, "Registered", Toast.LENGTH_SHORT).show();
 							finish();
 						}
 					});
                 	if(registrationId != null){
                 		finish();
                 	}else{
-                		progresDialog = ProgressDialog.show(getApplicationContext(), "", "Registering...");
+                		progresDialog = ProgressDialog.show(RegisterActivity.this, "", "Registering...");
                 	}
                 }else{
                     // user doen't filled that data
@@ -132,12 +136,15 @@ public class RegisterActivity extends Activity {
         // Check if regid already presents
         if (regId.equals("")) {
             // Registration is not present, register now with GCM
+        	RegisterActivity.name = name;
+        	RegisterActivity.email = email;
+        	RegisterActivity.onRegisterListener = listener;
             GCMRegistrar.register(this, SENDER_ID);
         } else {
             // Device is already registered on GCM
             if (GCMRegistrar.isRegisteredOnServer(this)) {
                 // Skips registration.
-                Toast.makeText(getApplicationContext(), "Already registered with GCM", Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this, "Already registered with GCM", Toast.LENGTH_LONG).show();
                 registrationId = regId;
             } else {
                 // Try to register again, but not in the UI thread.

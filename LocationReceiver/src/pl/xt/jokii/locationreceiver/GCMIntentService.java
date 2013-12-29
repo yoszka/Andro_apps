@@ -2,14 +2,8 @@ package pl.xt.jokii.locationreceiver;
  
 import static pl.xt.jokii.pushnotifications.CommonUtilities.SENDER_ID;
 
-import java.util.Set;
-
-import pl.xt.jokii.locationreceiver.R;
 import pl.xt.jokii.pushnotifications.CommonUtilities;
 import pl.xt.jokii.pushnotifications.ServerUtilities;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +13,8 @@ import com.google.android.gcm.GCMBaseIntentService;
  
 public class GCMIntentService extends GCMBaseIntentService {
  
-    private static final String TAG = "GCMIntentService";
+	private static final String TAG = "GCMIntentService";
+    public static OnUnregisteredListener onUnregisteredListener;
  
     public GCMIntentService() {
         super(SENDER_ID);
@@ -31,8 +26,11 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onRegistered(Context context, String registrationId) {
         Log.i(TAG, "Device registered: regId = " + registrationId);
-        Log.d("NAME", MainActivity.name);
-        ServerUtilities.register(context, MainActivity.name, MainActivity.email, registrationId);
+        ServerUtilities.register(context, RegisterActivity.name, RegisterActivity.email, registrationId);
+        if(RegisterActivity.onRegisterListener != null){
+        	RegisterActivity.onRegisterListener.onRegistered();
+        	RegisterActivity.onRegisterListener = null;
+        }
     }
  
     /**
@@ -41,7 +39,13 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onUnregistered(Context context, String registrationId) {
         Log.i(TAG, "Device unregistered");
-        ServerUtilities.unregister(context, registrationId);
+        if(onUnregisteredListener != null){
+        	onUnregisteredListener.onUnregistered();
+        	onUnregisteredListener = null;
+        }
+//        else{
+//        	ServerUtilities.unregister(context, registrationId, null);
+//        }
     }
  
     /**
