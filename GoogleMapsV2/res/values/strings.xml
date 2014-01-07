@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GoogleMapsV2</string>
+    <string name="map_normal">Normal</string>
+    <string name="map_satellite">Satellite</string>
+    <string name="map_hybrid">Hybrid</string>
+    <string name="map_terrain">Terrain</string>
+    <string name="hello_world">Hello Map!</string>
+
+</resources>

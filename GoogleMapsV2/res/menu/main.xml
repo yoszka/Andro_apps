@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/map_normal"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/map_normal"/>
+
+    <item
+        android:id="@+id/map_satellite"
+        android:orderInCategory="101"
+        android:showAsAction="ifRoom"
+        android:title="@string/map_satellite"/>
+
+    <item
+        android:id="@+id/map_hybrid"
+        android:orderInCategory="102"
+        android:showAsAction="ifRoom"
+        android:title="@string/map_hybrid"/>
+
+    <item
+        android:id="@+id/map_terrain"
+        android:orderInCategory="103"
+        android:showAsAction="ifRoom"
+        android:title="@string/map_terrain"/>
+
+</menu>
