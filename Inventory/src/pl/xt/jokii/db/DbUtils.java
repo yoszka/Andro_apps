@@ -97,31 +97,46 @@ public abstract class DbUtils {
 	 * @return InventoryResultsSet filed with entries from data base, null if none entry was retrieved 
 	 */
 	public static InventoryResultsSet retrieveResultSet(Context ctx, String pattern){
-		InventoryResultsSet resultsSet = new InventoryResultsSet();
-		
-		pattern = (pattern != null)? pattern.trim() : pattern;
-		
-		if(TextUtils.isEmpty(pattern)){
-		    pattern = null;
-		}else{
-		    pattern = InventoryTableMetaData.INVENTORY_NAME+" LIKE '%"+pattern+"%'";
-		}
-	   	 Cursor cursor = ctx.getContentResolver().query(InventoryProviderMetaData.InventoryTableMetaData.CONTENT_URI, null, pattern, null, null);
-	   	 
-	   	 while(cursor.moveToNext()){
-	   		InventoryEntry inventoryEntryTmp = new InventoryEntry();
-	   		
-	   		inventoryEntryTmp.setId			(cursor.getLong		(cursor.getColumnIndex(InventoryTableMetaData._ID)));
-	   		inventoryEntryTmp.setName		(cursor.getString	(cursor.getColumnIndex(InventoryTableMetaData.INVENTORY_NAME)));
-	   		inventoryEntryTmp.setCategory	(cursor.getString	(cursor.getColumnIndex(InventoryTableMetaData.INVENTORY_CATEGORY)));
-	   		inventoryEntryTmp.setAmount		(cursor.getInt		(cursor.getColumnIndex(InventoryTableMetaData.INVENTORY_AMOUNT)));
-	   		// type is added automatically inner addEntry() method
-	   		
-	   		resultsSet.addEntry(inventoryEntryTmp);
-	   	 }
-	   	cursor.close();
-		return resultsSet;
+	    return retrieveResultSet(ctx, pattern, false);
 	}
+	
+    /**
+     * Get entries from data base and put to InventoryResultsSet
+     * @param ctx
+     * @param pattern pattern to filter by {@code Name}
+     * @param onlyEmpty if {@code true} then entries with amount "0" will be retrieved
+     * @return InventoryResultsSet filed with entries from data base, null if none entry was retrieved 
+     */
+    public static InventoryResultsSet retrieveResultSet(Context ctx, String pattern, boolean onlyEmpty) {
+        InventoryResultsSet resultsSet = new InventoryResultsSet();
+        StringBuilder selectionArgsStringBuilder = new StringBuilder();
+        pattern = (pattern != null) ? pattern.trim() : pattern;
+
+        if (!TextUtils.isEmpty(pattern)) {
+            selectionArgsStringBuilder.append(InventoryTableMetaData.INVENTORY_NAME + " LIKE '%" + pattern + "%' ");
+        }
+        if (onlyEmpty) {
+            selectionArgsStringBuilder.append(InventoryTableMetaData.INVENTORY_AMOUNT + "=0 ");
+        }
+
+        Cursor cursor = ctx.getContentResolver().query(InventoryProviderMetaData.InventoryTableMetaData.CONTENT_URI,
+                null, selectionArgsStringBuilder.toString(), null, null);
+
+        while (cursor.moveToNext()) {
+            InventoryEntry inventoryEntryTmp = new InventoryEntry();
+
+            inventoryEntryTmp.setId(cursor.getLong(cursor.getColumnIndex(InventoryTableMetaData._ID)));
+            inventoryEntryTmp.setName(cursor.getString(cursor.getColumnIndex(InventoryTableMetaData.INVENTORY_NAME)));
+            inventoryEntryTmp.setCategory(cursor.getString(cursor
+                    .getColumnIndex(InventoryTableMetaData.INVENTORY_CATEGORY)));
+            inventoryEntryTmp.setAmount(cursor.getInt(cursor.getColumnIndex(InventoryTableMetaData.INVENTORY_AMOUNT)));
+            // type is added automatically inner addEntry() method
+
+            resultsSet.addEntry(inventoryEntryTmp);
+        }
+        cursor.close();
+        return resultsSet;
+    }
 	
 	
 //	/**

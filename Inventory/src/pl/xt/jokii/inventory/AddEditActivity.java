@@ -42,7 +42,7 @@ public class AddEditActivity extends Activity{
 	    
 	    mCategories = getListOfExistingCategories();
 	    mCategories.add(getString(R.string.add_new_category));
-	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, mCategories);
+	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_view_categories, mCategories);
 	    mSpinnerCategory.setAdapter(adapter);
 	    mSpinnerCategory.setOnItemSelectedListener(onCategorySelectedListener);
 	    

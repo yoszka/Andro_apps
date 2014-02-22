@@ -10,5 +10,14 @@
     <string name="add_new_category">Add new category</string>
     <string name="name_empty_warning">Name cannot be empty</string>
     <string name="delete_confirm">"Delete: \"%s\" ?"</string>
+    
+    <string-array name="drawer_options_array">
+        <item>Show all</item>
+        <item>Show empty</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
 
 </resources>
