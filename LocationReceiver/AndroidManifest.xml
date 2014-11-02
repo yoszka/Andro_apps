@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.xt.jokii.locationreceiver"
-    android:versionCode="121"
-    android:versionName="1.2.1" >
+    android:versionCode="130"
+    android:versionName="1.3.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="10" />
     
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -63,6 +63,7 @@
         
         
         <activity android:name=".settings.SettingsActivity"></activity>
+
     </application>
 
 </manifest>

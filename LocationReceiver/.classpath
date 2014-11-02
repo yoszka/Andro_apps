@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="C:/android-sdk-windows/add-ons/addon-google_apis-google-10/libs/maps.jar"/>
 	<classpathentry kind="lib" path="C:/android-sdk-windows/add-ons/addon-google_apis-google-10/libs/usb.jar"/>
 	<classpathentry kind="lib" path="C:/android-sdk-windows/add-ons/addon-google_apis-google-10"/>
-	<classpathentry kind="lib" path="C:/android-sdk-windows/platforms/android-10/android.jar"/>
+	<classpathentry kind="lib" path="C:/android-sdk-windows/platforms/android-10/android.jar" sourcepath="C:/android-sdk-windows/sources/android-19"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="output" path="bin/classes"/>

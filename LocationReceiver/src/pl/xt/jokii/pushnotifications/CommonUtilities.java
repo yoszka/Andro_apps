@@ -4,7 +4,7 @@ package pl.xt.jokii.pushnotifications;
 public final class CommonUtilities {
     
     // give your server registration url here
-    public static final String SERVER_URL          = "http://pinnote.zz.mu/";
+    public static final String SERVER_URL          = "http://locationer.comxa.com/";
     public static final String REGISTRATION_SITE   = "register.php";
     public static final String UNREGISTRATION_SITE = "unregister.php";
     
