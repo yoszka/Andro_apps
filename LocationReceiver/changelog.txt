@@ -1,2 +1,6 @@
-1.1.0 - Added signal type indicator icon
+1.1.0 - Added signal type indicator icon.
 1.2.1 - Add displaying past positions feature.
+1.3.0 - Decreased targetSdkVersion to 10 in order to show legacy menu button on devices API 11+
+      - Changed method of retrieving locations from remote server from direct DB connection to JSON http interface
+      - Improved method of retrieving users in order to correct handle cases when on free hosting provider attach analytics headers in comments.
+      - Changed server  
