@@ -26,6 +26,7 @@ import android.os.Bundle;
 public class TwoLibs extends Activity
 {
 	TextView  tv;
+	TextView  tv2;
 	private FooClass mFoo;
 	
     /** Called when the activity is first created. */
@@ -36,6 +37,7 @@ public class TwoLibs extends Activity
         setContentView(R.layout.main);
 
         tv = (TextView) findViewById(R.id.textView1);
+        tv2 = (TextView) findViewById(R.id.textView2);
         
         int       x  = 1000;
         int       y  = 42;
@@ -65,7 +67,10 @@ public class TwoLibs extends Activity
     	int b = FooClass.baarMethod();
     	int myPid = FooClass.getMyPid();
 //    	String systsemSecureSettingNative = getSystemSecureSetting();
+    	tv.setText("Wynik= " + a + ", b=" + b + ", MyPid: " + myPid);
+
     	String systsemSecureSettingNative = FooClass.getSystemSecureSetting(getContentResolver());
-    	tv.setText("Wynik= " + a + ", b=" + b + ", MyPid: " + myPid + "S.S.S = " + systsemSecureSettingNative);
+    	int systsemSecureSettingIntNative = FooClass.getSystemSecureSettingInt(getContentResolver());
+    	tv2.setText(": " + systsemSecureSettingIntNative + " : " + systsemSecureSettingNative);
     }
 }

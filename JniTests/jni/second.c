@@ -87,27 +87,8 @@ JNIEXPORT jint JNICALL Java_com_example_twolibs_FooClass_getMyPid(JNIEnv *env, j
     return callJavaAndroidFrameworkMethodFromNative(env);
 }
 
-//JNIEXPORT jstring JNICALL Java_com_example_twolibs_FooClass_getSystemSecureSetting(JNIEnv *env, jobject obj) {
-//    jclass act = (*env)->GetObjectClass(env, obj);
-//    jclass clsontentResolver = (*env)->FindClass(env, "android/content/Context");
-//
-//
-//    jmethodID  mid_getContentResolver = (*env)->GetMethodID(env, clsontentResolver, "getContentResolver", "()Landroid/content/ContentResolver;");
-//
-//    jobject contentObj = (*env)->CallObjectMethod(env, act, mid_getContentResolver);
-//
-//    jclass secClass = (*env)->FindClass(env, "android/provider/Settings$Secure");
-//
-//    jmethodID secMid = (*env)->GetStaticMethodID(env, secClass, "getString", "(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;");
-//
-//    jstring jStringParam = (*env)->NewStringUTF(env, "android_id");
-//    jstring jandroid_id= (jstring) (*env)->CallStaticObjectMethod(env, secClass, secMid, contentObj, jStringParam);
-//    (*env)->DeleteLocalRef(env, jStringParam);
-//
-//    return jandroid_id;
-//}
 
-// dzia³aj¹ca wersja, ale trzeba wywo³ywaæ metod¹ z activity
+// call this method from Android Java Activity
 JNIEXPORT jstring JNICALL Java_com_example_twolibs_TwoLibs_getSystemSecureSetting(JNIEnv *env, jclass act) {
     jclass clsContentResolver = (*env)->FindClass(env, "android/content/Context");
 
@@ -127,6 +108,8 @@ JNIEXPORT jstring JNICALL Java_com_example_twolibs_TwoLibs_getSystemSecureSettin
     return jandroid_id;
 }
 
+// call this method from any class, as argument pass ContentResolver
+// returns String
 JNIEXPORT jstring JNICALL Java_com_example_twolibs_FooClass_getSystemSecureSetting (JNIEnv *env, jclass jc, jobject jContentResolverObject) {
 
     jclass secClass = (*env)->FindClass(env, "android/provider/Settings$Secure");
@@ -134,9 +117,25 @@ JNIEXPORT jstring JNICALL Java_com_example_twolibs_FooClass_getSystemSecureSetti
     jmethodID secMid = (*env)->GetStaticMethodID(env, secClass, "getString", "(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;");
 
     jstring jStringParam = (*env)->NewStringUTF(env, "android_id");
+//    jstring jStringParam = (*env)->NewStringUTF(env, "package_verifier_enable");
     jstring jandroid_id= (jstring) (*env)->CallStaticObjectMethod(env, secClass, secMid, jContentResolverObject, jStringParam);
     (*env)->DeleteLocalRef(env, jStringParam);
 
     return jandroid_id;
 }
 
+// call this method from any class, as argument pass ContentResolver
+// returns int
+JNIEXPORT jint JNICALL Java_com_example_twolibs_FooClass_getSystemSecureSettingInt (JNIEnv *env, jclass jc, jobject jContentResolverObject) {
+
+    const int defaultValue = -1;
+    jclass secClass = (*env)->FindClass(env, "android/provider/Settings$Secure");
+
+    jmethodID secMid = (*env)->GetStaticMethodID(env, secClass, "getInt", "(Landroid/content/ContentResolver;Ljava/lang/String;I)I");
+
+    jstring jStringParam = (*env)->NewStringUTF(env, "package_verifier_enable");
+    jint jintParam = (jint) (*env)->CallStaticIntMethod(env, secClass, secMid, jContentResolverObject, jStringParam, defaultValue);
+    (*env)->DeleteLocalRef(env, jStringParam);
+
+    return jintParam;
+}
