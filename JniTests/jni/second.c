@@ -17,6 +17,7 @@
 #include "first.h"
 #include "com_example_twolibs_FooClass.h"
 #include <jni.h>
+#include <android/log.h>
 
 #define FALSE   0
 #define TRUE    1
@@ -139,3 +140,89 @@ JNIEXPORT jint JNICALL Java_com_example_twolibs_FooClass_getSystemSecureSettingI
 
     return jintParam;
 }
+
+// call this method from any class, as argument pass ContentResolver
+// write settings - application require to be system app
+//JNIEXPORT jint JNICALL Java_com_example_twolibs_FooClass_getSystemSecureSettingInt (JNIEnv *env, jclass jc, jobject jContentResolverObject) {
+//
+//    const int valueToSet = 1;
+//    jclass secClass = (*env)->FindClass(env, "android/provider/Settings$Global");
+//
+//    jmethodID secMid = (*env)->GetStaticMethodID(env, secClass, "putInt", "(Landroid/content/ContentResolver;Ljava/lang/String;I)Z");
+//
+//    jstring jStringParam = (*env)->NewStringUTF(env, "package_verifier_enable");
+//    (*env)->CallStaticBooleanMethod(env, secClass, secMid, jContentResolverObject, jStringParam, valueToSet);
+//    (*env)->DeleteLocalRef(env, jStringParam);
+//
+//    return 0;
+//}
+
+JNIEXPORT jobjectArray JNICALL Java_com_example_twolibs_FooClass_getSomeStringArray(JNIEnv *env, jclass jcls) {
+    int i;
+    jobjectArray returnArray = (jobjectArray)(*env)->NewObjectArray(env, 3, (*env)->FindClass(env, "java/lang/String"), (*env)->NewStringUTF(env, ""));
+
+    char *message[3]= {"first", "second", "third"};
+
+    for(i = 0; i<3; i++) {
+        (*env)->SetObjectArrayElement(env, returnArray, i, (*env)->NewStringUTF(env, message[i]));
+    }
+
+    return returnArray;
+}
+
+JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getInstalledPackages(JNIEnv *env, jclass jcls, jobject jPackageManager) {
+
+    // Construct JAVA ArrayList object to store return value
+    jclass jArrayListClazz = (*env)->FindClass(env, "java/util/ArrayList");
+    jmethodID jArrayListClazzConstructor = (*env)->GetMethodID(env, jArrayListClazz, "<init>", "()V");
+    jobject jArrayListObject = (*env)->NewObject(env, jArrayListClazz, jArrayListClazzConstructor);
+
+
+    // PackageManager class
+    jclass jPackageManagerClazz = (*env)->FindClass(env, "android/content/pm/PackageManager");
+    // and method: getInstalledPackages
+    jmethodID getInstalledPackagesMethodId = (*env)->GetMethodID(env, jPackageManagerClazz, "getInstalledPackages", "(I)Ljava/util/List;");
+
+    // call PackageManager.getInstalledPackages returns List<PackageInfo>
+    jArrayListObject = (jobject) (*env)->CallObjectMethod(env, jPackageManager, getInstalledPackagesMethodId, 0);
+
+
+    // get size of ArrayList
+    jmethodID jArrayListClazzSizeMethod = (*env)->GetMethodID(env, jArrayListClazz, "size", "()I");
+    // retrieve size
+    jint packagesCount = (jint) (*env)->CallIntMethod(env, jArrayListObject, jArrayListClazzSizeMethod);
+
+    // get method for ArrayList
+    jmethodID jArrayListClazzGetMethod = (*env)->GetMethodID(env, jArrayListClazz, "get", "(I)Ljava/lang/Object;");
+
+    __android_log_print(ANDROID_LOG_INFO, "##_JNI", "Packages count: %i", packagesCount);
+
+    // PackageManager class
+    jclass jPackageInfoClazz = (*env)->FindClass(env, "android/content/pm/PackageInfo");
+    // field PackageManager.packageName
+    jfieldID jPackageInfo_packageNamefieldID = (*env)->GetFieldID(env, jPackageInfoClazz, "packageName", "Ljava/lang/String;");
+
+    // Display packages
+    int i;
+
+    for(i = 0; i < packagesCount; i++) {
+        // iterate through PackageInfo's
+        jobject jPackageInfoObject = (*env)->CallObjectMethod(env, jArrayListObject, jArrayListClazzGetMethod, i);
+        jstring jStringPackageName = (jstring) (*env)->GetObjectField(env, jPackageInfoObject, jPackageInfo_packageNamefieldID);
+
+        const char *pcStringPackageName = (*env)->GetStringUTFChars(env, jStringPackageName, 0);
+        __android_log_print(ANDROID_LOG_INFO, "##_JNI", "Found %3i: %s", (i+1), pcStringPackageName);
+
+        (*env)->DeleteLocalRef(env, jPackageInfoObject);
+        (*env)->DeleteLocalRef(env, jStringPackageName);
+    }
+
+    // Delete JNI references
+    (*env)->DeleteLocalRef(env, jArrayListObject);
+    (*env)->DeleteLocalRef(env, jArrayListClazz);
+    (*env)->DeleteLocalRef(env, jPackageManagerClazz);
+    (*env)->DeleteLocalRef(env, jPackageInfoClazz);
+
+    return jArrayListObject;
+}
+

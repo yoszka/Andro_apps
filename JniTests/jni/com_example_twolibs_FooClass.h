@@ -55,6 +55,22 @@ JNIEXPORT jint JNICALL Java_com_example_twolibs_FooClass_getSystemSecureSettingI
 JNIEXPORT jint JNICALL Java_com_example_twolibs_FooClass_getInt
   (JNIEnv *, jclass, jobject, jstring, jint);
 
+/*
+ * Class:     com_example_twolibs_FooClass
+ * Method:    getSomeStringArray
+ * Signature: ()[Ljava/lang/String;
+ */
+JNIEXPORT jobjectArray JNICALL Java_com_example_twolibs_FooClass_getSomeStringArray
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_example_twolibs_FooClass
+ * Method:    getInstalledPackages
+ * Signature: (Ljava/lang/Object;)Ljava/util/ArrayList;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getInstalledPackages
+  (JNIEnv *, jclass, jobject);
+
 #ifdef __cplusplus
 }
 #endif

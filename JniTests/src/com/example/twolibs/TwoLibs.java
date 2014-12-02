@@ -15,8 +15,13 @@
  */
 package com.example.twolibs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.pm.PackageInfo;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -70,7 +75,20 @@ public class TwoLibs extends Activity
     	tv.setText("Wynik= " + a + ", b=" + b + ", MyPid: " + myPid);
 
     	String systsemSecureSettingNative = FooClass.getSystemSecureSetting(getContentResolver());
+    	String[] someStringsArray = FooClass.getSomeStringArray();
+    	ArrayList instaledPackages = FooClass.getInstalledPackages(getPackageManager());
     	int systsemSecureSettingIntNative = FooClass.getSystemSecureSettingInt(getContentResolver());
-    	tv2.setText(": " + systsemSecureSettingIntNative + " : " + systsemSecureSettingNative);
+
+    	tv2.setText("-> " + systsemSecureSettingIntNative + "\n" + systsemSecureSettingNative + ",\n PACKAGES: \n" + packagesInfosToString(instaledPackages));
     }
+
+    private String packagesInfosToString(ArrayList<PackageInfo> arrayListOfPackageInfo) {
+        StringBuffer sb = new StringBuffer();
+
+        for(PackageInfo pi : arrayListOfPackageInfo) {
+            sb.append(pi.packageName).append("\n");
+        }
+
+        return sb.toString();
+    } 
 }
