@@ -71,6 +71,22 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_twolibs_FooClass_getSomeStringAr
 JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getInstalledPackages
   (JNIEnv *, jclass, jobject);
 
+/*
+ * Class:     com_example_twolibs_FooClass
+ * Method:    getApplicationObject
+ * Signature: ()Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getApplicationObject
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_example_twolibs_FooClass
+ * Method:    getApplicationContext
+ * Signature: ()Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getApplicationContext
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

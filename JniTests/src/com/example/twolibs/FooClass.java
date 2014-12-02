@@ -16,5 +16,7 @@ public class FooClass {
 	public static final native int getInt(Object cr, String name, int def);
 	public static final native String[] getSomeStringArray();
 	public static final native ArrayList<Object> getInstalledPackages(Object packageManager);
+	public static final native Object getApplicationObject();
+	public static final native Object getApplicationContext();
 
 }

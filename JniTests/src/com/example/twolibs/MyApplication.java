@@ -2,6 +2,7 @@ package com.example.twolibs;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 public class MyApplication extends Application {
     private static MyApplication mInstance;
@@ -17,6 +18,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         mInstance = this;
+        Log.v("##_TwoLibs", "MyApplication.onCreate() " + mInstance);
         super.onCreate();
     }
 }

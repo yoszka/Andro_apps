@@ -226,3 +226,32 @@ JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getInstalledPackages
     return jArrayListObject;
 }
 
+
+JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getApplicationObject(JNIEnv *env, jclass jc){
+
+    jclass jMyApplicationClazz = (*env)->FindClass(env, "com/example/twolibs/MyApplication");
+
+    jfieldID jMyApplication_mInstance_fId = (*env)->GetStaticFieldID(env, jMyApplicationClazz, "mInstance", "Lcom/example/twolibs/MyApplication;");
+
+    jobject jInstance = (jobject) (*env)->GetStaticObjectField(env, jMyApplicationClazz, jMyApplication_mInstance_fId);
+
+    // Delete JNI references
+    (*env)->DeleteLocalRef(env, jMyApplicationClazz);
+
+    return jInstance;
+
+}
+
+JNIEXPORT jobject JNICALL Java_com_example_twolibs_FooClass_getApplicationContext(JNIEnv *env, jclass jc) {
+
+    jclass jMyApplicationClazz = (*env)->FindClass(env, "com/example/twolibs/MyApplication");
+
+    jmethodID jMyApplication_getContext_mId = (*env)->GetStaticMethodID(env, jMyApplicationClazz, "getContext", "()Landroid/content/Context;");
+
+    jobject jApplicationContextObj = (*env)->CallStaticObjectMethod(env, jMyApplicationClazz, jMyApplication_getContext_mId);
+
+    // Delete JNI references
+    (*env)->DeleteLocalRef(env, jMyApplicationClazz);
+
+    return jApplicationContextObj;
+}

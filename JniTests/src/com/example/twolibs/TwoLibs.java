@@ -72,7 +72,12 @@ public class TwoLibs extends Activity
     	int b = FooClass.baarMethod();
     	int myPid = FooClass.getMyPid();
 //    	String systsemSecureSettingNative = getSystemSecureSetting();
-    	tv.setText("Wynik= " + a + ", b=" + b + ", MyPid: " + myPid);
+    	tv.setText("Wynik= " + a + ", b=" + b + ", MyPid: " + myPid + "\n" +
+    			"APP N: " + FooClass.getApplicationObject() + "\n" +
+    			"APP J: " + MyApplication.getInstance() + "\n" +
+    			"APPctx N: " + FooClass.getApplicationContext() + "\n" +
+    			"APPctx J: " + getApplicationContext()
+    	        );
 
     	String systsemSecureSettingNative = FooClass.getSystemSecureSetting(getContentResolver());
     	String[] someStringsArray = FooClass.getSomeStringArray();
