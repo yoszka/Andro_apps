@@ -36,12 +36,9 @@ public abstract class OnPositionChangedByDistanceListener {
         }
 
         for(int i = 0; i < mPoints.length; i++) {
-//            float distance = (float) Math.sqrt((mPoints[i].x - newPoints[i].x) * (mPoints[i].x - newPoints[i].x) 
-//                    + (mPoints[i].y - newPoints[i].y) * (mPoints[i].y - newPoints[i].y));
             float distance = Math.abs(mPoints[i].y - newPoints[i].y);
 
             if(distance >= mMinDistance) {
-//                mPoints[i].x = newPoints[i].x;
                 mPoints[i].y = newPoints[i].y;
                 isAnyPositionChangedByDistance = true;
             }

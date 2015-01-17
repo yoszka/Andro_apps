@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -108,7 +107,7 @@ public class TankControllerView extends View implements Callback{
                         pointTmp.x = getXPosBounded(pointerSide.asInt(), 0, event);
                         pointTmp.y = getYPosBounded(0, event);
                     }
-                    notifyPositionChanged();
+                    notifyPositionChangedByDistance();
                 }
             } else {
                 for (int i = 0; i < size; i++) {
@@ -128,7 +127,7 @@ public class TankControllerView extends View implements Callback{
                             pointTmp.x = getXPosBounded(pointerIdIndex, pointTmp.index, event);
                             pointTmp.y = getYPosBounded(pointTmp.index, event);
 //                        }
-                            notifyPositionChanged();
+                            notifyPositionChangedByDistance();
                     }
                 }
             }
@@ -260,11 +259,16 @@ public class TankControllerView extends View implements Callback{
         dY = (dY > maxValue) ? maxValue : dY;
         return dY;
     }
-
-    private void notifyPositionChanged() {
-//        mHandler.sendEmptyMessage(0);
+    
+    private void notifyPositionChangedByDistance() {
         if(mOnPositionChangedByDistanceListener != null) {
             mOnPositionChangedByDistanceListener.updatePosition(mPoints);
+        }
+    }
+
+    private void notifyPositionChanged() {
+        if(mOnPositionChangedByDistanceListener != null) {
+            mOnPositionChangedByDistanceListener.onPositionChanged();
         }
     }
 

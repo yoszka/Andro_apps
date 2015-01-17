@@ -3,6 +3,7 @@ package tomasz.jokiel.blootothcontroller;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
+import tomasz.jokiel.blootothcontroller.DeviceConnectPerformer.OnDeviceConnectedListener;
 import tomasz.jokiel.blootothcontroller.iodevice.ApplicationStateListener;
 import tomasz.jokiel.blootothcontroller.iodevice.DeviceDiscoveryCallback;
 import tomasz.jokiel.blootothcontroller.iodevice.DiscoverableDevice;
@@ -10,6 +11,7 @@ import tomasz.jokiel.blootothcontroller.iodevice.EndpointDevice;
 import tomasz.jokiel.blootothcontroller.iodevice.MessageDisplayer;
 import tomasz.jokiel.tankcontroller.OnPositionChangedByDistanceListener;
 import tomasz.jokiel.tankcontroller.TankControllerView;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -28,7 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PlaceholderFragment extends Fragment implements MessageDisplayer, OnClickListener, Callback, ApplicationStateListener, OnItemClickListener{
+public class PlaceholderFragment extends Fragment implements MessageDisplayer, OnClickListener, Callback, ApplicationStateListener, OnItemClickListener, OnDeviceConnectedListener{
     private static final int DISCOVERY_TIMEOUT_MSG = 1;
     private static final int REPEATER_MSG = 2;
     private static final long DISCOVERY_DEVICE_MAX_PERIOD = 12000;
@@ -43,6 +45,8 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
     private DiscoverableDevice mDiscoverableDevice;
     private LinkedHashSet<EndpointDevice> mEndpointDevices;
     private final Handler mHandler = new Handler(this);
+    private DeviceConnectPerformer mDeviceConnectPerformer = new DeviceConnectPerformer(this);
+    private View mConnectedToLlistItemView;
 
     private ArrayAdapter<String> mDiscoveredDevicesArrayAdapter;
     private DeviceDiscoveryCallback mDeviceDiscoveryCallback;
@@ -142,10 +146,37 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
                 }
             }
         } else if(v == buttonDisconnect) {
-            if(mDiscoverableDevice != null) {
-                boolean success = mDiscoverableDevice.close();
-                if(!success) {
-                    Toast.makeText(getActivity(), "No connected?", Toast.LENGTH_SHORT).show();
+            disconnectDevice();
+        }
+    }
+
+    private void disconnectDevice() {
+        if(mDiscoverableDevice != null) {
+            boolean success = mDiscoverableDevice.close();
+
+            enableDevicesList();
+
+            if(!success) {
+                Toast.makeText(getActivity(), "Not connected", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Disconnected", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void enableDevicesList() {
+        mDiscoveredDevicesListView.setEnabled(true);
+
+        if(mConnectedToLlistItemView != null) {
+            int positionOnList = (int) mConnectedToLlistItemView.getTag();
+            String viewText = ((TextView)mConnectedToLlistItemView).getText().toString();
+
+            if(mDiscoveredDevicesArrayAdapter.getCount() > positionOnList) {
+                String listItemTextOnTheList = mDiscoveredDevicesArrayAdapter.getItem(positionOnList);
+                boolean isViewPositionStillSame = viewText.equals(listItemTextOnTheList);
+                
+                if(isViewPositionStillSame) {
+                    mConnectedToLlistItemView.setEnabled(true);
                 }
             }
         }
@@ -153,17 +184,27 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        setListItemChosenInactive(view, position);
         EndpointDevice[] device = mEndpointDevices.toArray(new EndpointDevice[mEndpointDevices.size()]);
-        Toast.makeText(getActivity(), device[position].toString(), Toast.LENGTH_SHORT).show();
-        
         initateConnection(device[position]);
-        
+    }
+
+    private void setListItemChosenInactive(View view, int position) {
+        view.setEnabled(false);
+        mDiscoveredDevicesListView.setEnabled(false);
+        view.setTag(position);
+        mConnectedToLlistItemView = view;
     }
 
     private void initateConnection(EndpointDevice endpointDevice) {
         if(mDiscoverableDevice != null) {
-            mDiscoverableDevice.connect(endpointDevice);
+            mDeviceConnectPerformer.connectDevice(mDiscoverableDevice, endpointDevice);
         }
+    }
+
+    @Override
+    public void onDeviceConnected(EndpointDevice endpointDevice) {
+        Toast.makeText(getActivity(), "Connected:\n" + endpointDevice.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -206,6 +247,8 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
     }
 
     private void startDiscovery() {
+        disconnectDevice();
+
         if(mDiscoverableDevice != null) {
             if(mDeviceDiscoveryCallback != null) {
                 mDeviceDiscoveryCallback.onStartDiscovery();
