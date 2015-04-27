@@ -35,7 +35,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libtwolib-second
 LOCAL_LDLIBS := -llog
-LOCAL_SRC_FILES := second.c
+LOCAL_SRC_FILES := second.cpp VmUtil.cpp
 
 LOCAL_STATIC_LIBRARIES := libtwolib-first
 
