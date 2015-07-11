@@ -62,7 +62,7 @@ public class Backup {
                             jsonMetaEntry.put(String.valueOf(columnTypes[i]), cursor.getFloat(columnIndexes[i]));
                             break;
                         case Cursor.FIELD_TYPE_INTEGER:
-                            jsonMetaEntry.put(String.valueOf(columnTypes[i]), cursor.getInt(columnIndexes[i]));
+                            jsonMetaEntry.put(String.valueOf(columnTypes[i]), cursor.getLong(columnIndexes[i]));
                             break;
                         case Cursor.FIELD_TYPE_STRING:
                             jsonMetaEntry.put(String.valueOf(columnTypes[i]), cursor.getString(columnIndexes[i]));
