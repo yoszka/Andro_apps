@@ -1,10 +1,18 @@
-package tomasz.jokiel.blootothcontroller.iodevice;
+package tomasz.jokiel.blootothcontroller.iodevice.bt;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import tomasz.jokiel.blootothcontroller.iodevice.ByteParser;
+import tomasz.jokiel.blootothcontroller.iodevice.CommandByteParser;
+import tomasz.jokiel.blootothcontroller.iodevice.EndpointDevice;
+import tomasz.jokiel.blootothcontroller.iodevice.IoDeviceListener;
+import tomasz.jokiel.blootothcontroller.iodevice.MultiEndpointDevice;
+import tomasz.jokiel.blootothcontroller.iodevice.CommandByteParser.CommandReceivedListener;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -13,27 +21,29 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 public class BtIoDevice extends MultiEndpointDevice{
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothSocket  mBluetoothSocket;
-    private IoDeviceListener mListener;
+    private IoDeviceListener mIoDeviceListener;
     private final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private OutputStream mBluetoothOutputStream;
+    private InputStream mBluetoothInputStream;
+    private AtomicBoolean isConnected = new AtomicBoolean(false);
 
     @Override
     public void init(Context context, IoDeviceListener listener) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mListener = listener;
+        mIoDeviceListener = listener;
 
         if (!isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            mListener.requestEnable(enableBtIntent);
+            Intent enableBtIntent = BtUtil.getRequestEnableBluetoothIntent();
+            mIoDeviceListener.requestEnable(enableBtIntent);
         }
     }
+
+
 
     private class DiscoveryBroadcastReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
@@ -45,7 +55,7 @@ public class BtIoDevice extends MultiEndpointDevice{
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 EndpointDevice endpointDevice = new EndpointDevice(bluetoothDevice.getName(), bluetoothDevice.getAddress());
                 Log.v("BT#" + getClass().getSimpleName(), "DEVICE: " + endpointDevice);
-                mListener.onDeviceFound(endpointDevice);
+                mIoDeviceListener.onDeviceFound(endpointDevice);
             }
         }
     };
@@ -57,6 +67,14 @@ public class BtIoDevice extends MultiEndpointDevice{
 
     @Override
     public boolean close() {
+        isConnected.set(false);
+        boolean outputStreamCloseResult = closeBluetoothOutputStream();
+        boolean inputStreamCloseResult = closeBluetoothInputStream();
+
+        return outputStreamCloseResult && inputStreamCloseResult;
+    }
+
+    private boolean closeBluetoothOutputStream() {
         boolean result = false;
 
         if (mBluetoothOutputStream != null) {
@@ -75,7 +93,22 @@ public class BtIoDevice extends MultiEndpointDevice{
                 mBluetoothOutputStream = null;
             }
         }
+        return result;
+    }
 
+    private boolean closeBluetoothInputStream() {
+        boolean result = false;
+
+        if (mBluetoothInputStream != null) {
+            try {
+                mBluetoothInputStream.close();
+                result = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                mBluetoothInputStream = null;
+            }
+        }
         return result;
     }
 
@@ -96,13 +129,47 @@ public class BtIoDevice extends MultiEndpointDevice{
     }
 
     @Override
-    public void readBytes(byte[] b) {
+    public void readBytes(byte[] buffer) {}
+
+    private void registerInputStreamListener(final InputStream inputStream) {
+        if(inputStream != null) {
+            new Thread(new Runnable() {
+                
+                @Override
+                public void run() {
+                    ByteParser byteParser = new CommandByteParser(new CommandReceivedListener() {
+                        
+                        @Override
+                        public void onCommandReceived(String receivedCommand) {
+                            mIoDeviceListener.dataArrived(receivedCommand.getBytes());
+                        }
+                    });
+                    
+                    try {
+                        while (isConnected.get()) {
+                            int data = inputStream.read();
+                            
+                            if (data != -1) {
+                                byteParser.addByteToParse((byte)data);
+                            }
+                        }
+                    } catch (IOException e) {
+                        if(isConnected.get()) {
+                            throw new RuntimeException(".\n\nCheck that the UUID: " + SPP_UUID.toString() + " exists on server.", e);
+                        }
+                    }
+                }
+            }).start();
+        } else {
+            Log.w("registerInputStreamListener", "inputStream == null");
+        }
     }
 
     @Override
     public boolean isEnabled() {
         return (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled());
     }
+
     @Override
     public EndpointDevice[] getBondedDevices() {
         final Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
@@ -121,7 +188,7 @@ public class BtIoDevice extends MultiEndpointDevice{
         if(mDiscoveryBroadcastReceiver == null) {
             mBluetoothAdapter.startDiscovery();
             mDiscoveryBroadcastReceiver = new DiscoveryBroadcastReceiver();
-            mListener.registerForDiscovery(mDiscoveryBroadcastReceiver, mDiscoveryIntentFilter);
+            mIoDeviceListener.registerForDiscovery(mDiscoveryBroadcastReceiver, mDiscoveryIntentFilter);
         }
     }
 
@@ -129,18 +196,22 @@ public class BtIoDevice extends MultiEndpointDevice{
     public void stopDiscovery() {
         if(mDiscoveryBroadcastReceiver != null) {
             mBluetoothAdapter.cancelDiscovery();
-            mListener.unregisterFromDiscovery(mDiscoveryBroadcastReceiver);
+            mIoDeviceListener.unregisterFromDiscovery(mDiscoveryBroadcastReceiver);
             mDiscoveryBroadcastReceiver = null;
         }
     }
 
     @Override
-    public void connect(EndpointDevice endpointDevice) {
+    public boolean connect(EndpointDevice endpointDevice) {
         BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(endpointDevice.getAddress());
         try {
             mBluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID);
             mBluetoothSocket.connect();
             mBluetoothOutputStream = mBluetoothSocket.getOutputStream();
+            mBluetoothInputStream = mBluetoothSocket.getInputStream();
+            isConnected.set(true);
+            registerInputStreamListener(mBluetoothInputStream);
+            return true;
         } catch (IOException e) {
             Log.e("connect", e.getMessage());
             e.printStackTrace();
@@ -151,6 +222,8 @@ public class BtIoDevice extends MultiEndpointDevice{
                 e1.printStackTrace();
             }
         }
+
+        return false;
     }
 
 }

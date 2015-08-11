@@ -1,14 +1,15 @@
 package tomasz.jokiel.blootothcontroller;
 
-import android.os.AsyncTask;
 import tomasz.jokiel.blootothcontroller.iodevice.DiscoverableDevice;
 import tomasz.jokiel.blootothcontroller.iodevice.EndpointDevice;
+import tomasz.jokiel.blootothcontroller.iodevice.OnDeviceConnectStateListener;
+import android.os.AsyncTask;
 
 public class DeviceConnectPerformer {
-    private final OnDeviceConnectedListener mOnDeviceConnectedListener;
+    private final OnDeviceConnectStateListener mDeviceConnectStateListener;
 
-    public DeviceConnectPerformer(OnDeviceConnectedListener onDeviceConnectedListener) {
-        mOnDeviceConnectedListener = onDeviceConnectedListener;
+    public DeviceConnectPerformer(OnDeviceConnectStateListener onDeviceConnectStateListener) {
+        mDeviceConnectStateListener = onDeviceConnectStateListener;
     }
 
     public void connectDevice(DiscoverableDevice discoverableDevice, EndpointDevice endpointDevice) {
@@ -20,6 +21,7 @@ public class DeviceConnectPerformer {
 
         public DeviceConnectingAsyncTask(DiscoverableDevice discoverableDevice) {
             mDiscoverableDevice = discoverableDevice;
+            mDiscoverableDevice.setDeviceConnectStateListener(mDeviceConnectStateListener);
         }
 
         @Override
@@ -31,11 +33,9 @@ public class DeviceConnectPerformer {
 
         @Override
         protected void onPostExecute(EndpointDevice endpointDevice) {
-            mOnDeviceConnectedListener.onDeviceConnected(endpointDevice);
+            if (!endpointDevice.isIsConnectEventAcynchronous()) {
+                mDeviceConnectStateListener.onDeviceConnected(endpointDevice);
+            }
         }
-    }
-
-    public interface OnDeviceConnectedListener {
-        public void onDeviceConnected(EndpointDevice endpointDevice);
     }
 }

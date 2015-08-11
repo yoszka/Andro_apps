@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class EndpointDevice implements Parcelable{
     private String mName;
     private String mAddress;
+    private boolean mIsConnectEventAcynchronous;
     
     public EndpointDevice(String name, String address){
         mName = name;
@@ -88,6 +89,14 @@ public class EndpointDevice implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mName);
         dest.writeString(mAddress);
+    }
+
+    public boolean isIsConnectEventAcynchronous() {
+        return mIsConnectEventAcynchronous;
+    }
+
+    public void setIsConnectEventAcynchronous(boolean isConnectEventAcynchronous) {
+        mIsConnectEventAcynchronous = isConnectEventAcynchronous;
     }
     
     

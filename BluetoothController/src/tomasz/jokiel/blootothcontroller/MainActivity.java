@@ -3,7 +3,6 @@ package tomasz.jokiel.blootothcontroller;
 import java.util.LinkedHashSet;
 
 import tomasz.jokiel.blootothcontroller.iodevice.ApplicationStateListener;
-import tomasz.jokiel.blootothcontroller.iodevice.BtIoDevice;
 import tomasz.jokiel.blootothcontroller.iodevice.DeviceDiscoveryCallback;
 import tomasz.jokiel.blootothcontroller.iodevice.DiscoverableDevice;
 import tomasz.jokiel.blootothcontroller.iodevice.EndpointDevice;
@@ -11,25 +10,38 @@ import tomasz.jokiel.blootothcontroller.iodevice.IoDevice;
 import tomasz.jokiel.blootothcontroller.iodevice.IoDeviceListener;
 import tomasz.jokiel.blootothcontroller.iodevice.MessageDisplayer;
 import tomasz.jokiel.blootothcontroller.iodevice.MultiEndpointDevice;
+import tomasz.jokiel.blootothcontroller.iodevice.bt.BtIoDevice;
+import tomasz.jokiel.blootothcontroller.iodevice.bt.BtSmartIoDevice;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity implements IoDeviceListener, DeviceDiscoveryCallback {
+public class MainActivity extends ActionBarActivity implements IoDeviceListener, DeviceDiscoveryCallback, Callback {
     private static final String DEVICES_LIST = "DEVICES_LIST";
+    private static final int IO_DEVICE_BLUETOOTH = 0;
+    private static final int IO_DEVICE_BLUETOOTH_SMART = 1;
+    private static final int DEFAULT_IO_DEVICE_TYPE = IO_DEVICE_BLUETOOTH;
+    private final int mIoDeviceType = DEFAULT_IO_DEVICE_TYPE;
 
     private final int REQUEST_ENABLE_IO_DEVICE = 1;
+
+    private final int MESSAGE_BATTERY_LEVEL = 1;
 
     private IoDevice mIoDevice;
     private MessageDisplayer mMessageDisplayer;
     private ApplicationStateListener mApplicationStateListener;
     private LinkedHashSet<EndpointDevice> mEndpointDevices = new LinkedHashSet<EndpointDevice>();
+    private Handler mHandler = new Handler(this);
 
     private boolean mIsEnableRequestInProgress;
 
@@ -38,28 +50,28 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mIsEnableRequestInProgress = true;
         }
 
-        initIoDevice();
+        mIoDevice = getIoDevice();
 
         PlaceholderFragment placeholderFragment = new PlaceholderFragment();
         placeholderFragment.setDiscoverableDevice((DiscoverableDevice) mIoDevice);
         placeholderFragment.setDeviceDiscoveryCallback(this);
         mMessageDisplayer = placeholderFragment;
         mApplicationStateListener = placeholderFragment;
-        
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, placeholderFragment).commit();
-        
-        if(mIoDevice.isEnabled()) {
+
+        if (mIoDevice.isEnabled()) {
             displayBoundedDevices();
         }
-        if(savedInstanceState != null) {
+
+        if (savedInstanceState != null) {
             Parcelable[] devices = savedInstanceState.getParcelableArray(DEVICES_LIST);
 
-            for(Parcelable device : devices) {
+            for (Parcelable device : devices) {
                 mEndpointDevices.add((EndpointDevice) device);
             }
         }
@@ -71,9 +83,22 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
         super.onSaveInstanceState(outState);
     }
 
-    private void initIoDevice() {
-        mIoDevice = new BtIoDevice();
-        mIoDevice.init(this, this);
+    private IoDevice getIoDevice() {
+        IoDevice ioDevice = null;
+
+        switch (mIoDeviceType) {
+        case IO_DEVICE_BLUETOOTH:
+            ioDevice = new BtIoDevice();
+            break;
+        case IO_DEVICE_BLUETOOTH_SMART:
+            ioDevice = new BtSmartIoDevice();
+            break;
+        default:
+            throw new RuntimeException("No such device");
+        }
+
+        ioDevice.init(this, this);
+        return ioDevice;
     }
 
     @Override
@@ -84,9 +109,6 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
@@ -94,14 +116,21 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void dataArrived(byte[] data) {
+        String dataString = new String(data);
+        Log.v("##_BTC", "dataArrived: " + dataString);
+
+        if (dataString.contains("&ADC&")) {
+            Message msg = mHandler.obtainMessage(MESSAGE_BATTERY_LEVEL);
+            msg.obj = dataString;
+            mHandler.sendMessage(msg);
+        }
     }
 
     @Override
     public void requestEnable(Intent enableIntent) {
-        if(!mIsEnableRequestInProgress) {
+        if (!mIsEnableRequestInProgress) {
             startActivityForResult(enableIntent, REQUEST_ENABLE_IO_DEVICE);
             mIsEnableRequestInProgress = true;
         }
@@ -109,7 +138,7 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
 
     @Override
     public void registerForDiscovery(BroadcastReceiver receiver, IntentFilter intentFilter) {
-        registerReceiver(receiver, intentFilter); 
+        registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -118,20 +147,23 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
     }
 
     @Override
-    public void onDeviceFound(EndpointDevice device) {
-        Toast.makeText(this, device.getName(), Toast.LENGTH_LONG).show();
-        mEndpointDevices.add(device);
-        mApplicationStateListener.onDeviceListChanged(mEndpointDevices);
+    public void onDeviceFound(final EndpointDevice device) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, device.getName(), Toast.LENGTH_LONG).show();
+                mEndpointDevices.add(device);
+                mApplicationStateListener.onDeviceListChanged(mEndpointDevices);
+                Log.d("MainActivity", "onDeviceFound");
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_IO_DEVICE) {
             mIsEnableRequestInProgress = false;
-            if(resultCode == RESULT_CANCELED) {
-                mMessageDisplayer.displayMessage("BT device OFF");
-            } else if(resultCode == RESULT_OK) {
-                mMessageDisplayer.displayMessage("BT device ON");
+            if (resultCode == RESULT_OK) {
                 displayBoundedDevices();
             }
         }
@@ -142,10 +174,8 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
             EndpointDevice[] pairedDevices = getPairedDevices();
 
             if (pairedDevices.length > 0) {
-                // Loop through paired devices
                 for (EndpointDevice device : pairedDevices) {
                     mEndpointDevices.add(device);
-//                    mMessageDisplayer.appendLineDisplayMessage(device.getName() + " [" + device.getAddress() + "]");
                 }
                 mApplicationStateListener.onDeviceListChanged(mEndpointDevices);
             }
@@ -163,9 +193,23 @@ public class MainActivity extends ActionBarActivity implements IoDeviceListener,
     @Override
     public void onStartDiscovery() {
         mEndpointDevices.clear();
-        if(mIoDevice.isEnabled()) {
+        if (mIoDevice.isEnabled()) {
             displayBoundedDevices();
         }
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what) {
+        case MESSAGE_BATTERY_LEVEL:
+            String dataString = (String) msg.obj;
+            dataString = dataString.replaceAll("\\*\\:ACK&ADC&", ""); // *:ACK&ADC&165:#
+            String value = dataString.replaceAll("\\:\\#", ""); // *:ACK&ADC&165:#
+            Log.v("##_BTC", "MESSAGE_BATTERY_LEVEL: " + value);
+            mMessageDisplayer.batteryLevel(Integer.valueOf(value));
+            return true;
+        }
+        return false;
     }
 
 }

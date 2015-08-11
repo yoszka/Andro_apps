@@ -3,15 +3,14 @@ package tomasz.jokiel.blootothcontroller;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
-import tomasz.jokiel.blootothcontroller.DeviceConnectPerformer.OnDeviceConnectedListener;
 import tomasz.jokiel.blootothcontroller.iodevice.ApplicationStateListener;
 import tomasz.jokiel.blootothcontroller.iodevice.DeviceDiscoveryCallback;
 import tomasz.jokiel.blootothcontroller.iodevice.DiscoverableDevice;
 import tomasz.jokiel.blootothcontroller.iodevice.EndpointDevice;
 import tomasz.jokiel.blootothcontroller.iodevice.MessageDisplayer;
+import tomasz.jokiel.blootothcontroller.iodevice.OnDeviceConnectStateListener;
 import tomasz.jokiel.tankcontroller.OnPositionChangedByDistanceListener;
 import tomasz.jokiel.tankcontroller.TankControllerView;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -19,27 +18,31 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
-public class PlaceholderFragment extends Fragment implements MessageDisplayer, OnClickListener, Callback, ApplicationStateListener, OnItemClickListener, OnDeviceConnectedListener{
+public class PlaceholderFragment extends Fragment implements MessageDisplayer, OnClickListener, Callback, ApplicationStateListener, OnItemClickListener, OnDeviceConnectStateListener{
+    private static final int REPEATER_PERIOD_MS = 1400;
     private static final int DISCOVERY_TIMEOUT_MSG = 1;
     private static final int REPEATER_MSG = 2;
     private static final long DISCOVERY_DEVICE_MAX_PERIOD = 12000;
     private TextView mTextView;
+    private TextView mBatteryTextView;
     private TankControllerView mTankControllerView;
     private Button mStartDiscoveryButton;
-    private Button mButton1;
-    private Button mButton2;
-    private Button buttonDisconnect;
+    private Button mButtonDisconnect;
+    private Button mBatteryButton;
     private ProgressBar mStartDiscoveryButtonProgressBar;
     private ListView mDiscoveredDevicesListView;
     private DiscoverableDevice mDiscoverableDevice;
@@ -47,6 +50,13 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
     private final Handler mHandler = new Handler(this);
     private DeviceConnectPerformer mDeviceConnectPerformer = new DeviceConnectPerformer(this);
     private View mConnectedToLlistItemView;
+    
+    private EditText mStreamPathEditText;
+    private Button mStartButton;
+    private VideoView mVideoView;
+    private MediaController mMediaController;
+    
+    private final static String BATTERY_LEVEL_MESSAGE = "*:SC002:#"; 
 
     private ArrayAdapter<String> mDiscoveredDevicesArrayAdapter;
     private DeviceDiscoveryCallback mDeviceDiscoveryCallback;
@@ -66,7 +76,7 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
 //                  Toast.makeText(getActivity(), "No connected?", Toast.LENGTH_SHORT).show();
               } else {
                   mHandler.removeMessages(REPEATER_MSG);
-                  mHandler.sendEmptyMessageDelayed(REPEATER_MSG, 700);
+                  mHandler.sendEmptyMessageDelayed(REPEATER_MSG, REPEATER_PERIOD_MS);
               }
           }
         }
@@ -78,20 +88,29 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mTextView = (TextView) rootView.findViewById(R.id.text);
+        mTextView = (TextView) rootView.findViewById(R.id.infoText);
+        mBatteryTextView = (TextView) rootView.findViewById(R.id.batteryTextView);
         mTankControllerView = (TankControllerView) rootView.findViewById(R.id.tank_controller_view);
         mStartDiscoveryButton = (Button) rootView.findViewById(R.id.startDiscoveryButton);
-        mButton1 = (Button) rootView.findViewById(R.id.button1);
-        mButton2 = (Button) rootView.findViewById(R.id.button2);
-        buttonDisconnect = (Button) rootView.findViewById(R.id.buttonDisconnect);
+        mButtonDisconnect = (Button) rootView.findViewById(R.id.buttonDisconnect);
+        mBatteryButton = (Button) rootView.findViewById(R.id.batteryButton);
         mStartDiscoveryButton.setOnClickListener(this);
-        mButton1.setOnClickListener(this);
-        mButton2.setOnClickListener(this);
-        buttonDisconnect.setOnClickListener(this);
+        mButtonDisconnect.setOnClickListener(this);
+        mBatteryButton.setOnClickListener(this);
         mStartDiscoveryButtonProgressBar = (ProgressBar) rootView.findViewById(R.id.startDiscoveryButtonProgressBar);
         mDiscoveredDevicesListView = (ListView) rootView.findViewById(R.id.discoveredDevicesListView);
         mDiscoveredDevicesArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new ArrayList<String>());
         mTankControllerView.setOnPositionChangedByDistanceListener(mOnPositionChangedByDistanceListenerTank);
+        
+        mStreamPathEditText = (EditText) rootView.findViewById(R.id.stream_path);
+        mStartButton = (Button) rootView.findViewById(R.id.start_button);
+        mVideoView = (VideoView)rootView.findViewById(R.id.video_view);
+
+        mMediaController = new MediaController(getActivity());
+        mMediaController.setAnchorView(mVideoView);
+        mVideoView.setMediaController(mMediaController);
+
+        mStartButton.setOnClickListener(this);
 
         if(mEndpointDevices!= null) {
             addEntriesToAdapter();
@@ -111,13 +130,8 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
     }
 
     @Override
-    public void displayMessage(String message) {
-//        mTextView.setText(message);
-    }
-
-    @Override
-    public void appendLineDisplayMessage(String message) {
-//        mTextView.setText(mTextView.getText() + "\n" + message);
+    public void batteryLevel(int batteryLevel) {
+        mBatteryTextView.setText(String.valueOf(batteryLevel));
     }
 
     @Override
@@ -129,24 +143,16 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
     public void onClick(View v) {
         if(v == mStartDiscoveryButton) {
             startDiscovery();
-        } else if(v == mButton1) {
-            if(mDiscoverableDevice != null) {
-//                boolean success = mDiscoverableDevice.writeBytes("*:P200H002R100:#".getBytes());
-                boolean success = mDiscoverableDevice.writeBytes("*:GO+200&+200:#".getBytes());
-                if(!success) {
-                    Toast.makeText(getActivity(), "No connected?", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else if(v == mButton2) {
-            if(mDiscoverableDevice != null) {
-//                boolean success = mDiscoverableDevice.writeBytes("*:P200H019R100:#".getBytes());
-                boolean success = mDiscoverableDevice.writeBytes("*:GO-200&-200:#".getBytes());
-                if(!success) {
-                    Toast.makeText(getActivity(), "No connected?", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else if(v == buttonDisconnect) {
+        } else if(v == mButtonDisconnect) {
             disconnectDevice();
+        } else if(v == mBatteryButton) {
+            if(mDiscoverableDevice != null) {
+                requestBatteryLevel();
+            } else {
+                Toast.makeText(getActivity(), "No connected?", Toast.LENGTH_SHORT).show();
+            }
+        } else if (v == mStartButton) {
+            configureVideoView();
         }
     }
 
@@ -162,6 +168,10 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
                 Toast.makeText(getActivity(), "Disconnected", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void requestBatteryLevel() {
+        mDiscoverableDevice.writeBytes(BATTERY_LEVEL_MESSAGE.getBytes());
     }
 
     private void enableDevicesList() {
@@ -203,8 +213,13 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
     }
 
     @Override
-    public void onDeviceConnected(EndpointDevice endpointDevice) {
-        Toast.makeText(getActivity(), "Connected:\n" + endpointDevice.toString(), Toast.LENGTH_SHORT).show();
+    public void onDeviceConnected(final EndpointDevice endpointDevice) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity().getApplicationContext(), "Connected:\n" + endpointDevice.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -288,4 +303,8 @@ public class PlaceholderFragment extends Fragment implements MessageDisplayer, O
         }
     }
 
+    private void configureVideoView() {
+      mVideoView.setVideoPath(mStreamPathEditText.getText().toString());
+      mVideoView.start();
+  }
 }
